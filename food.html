@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>美食地圖｜山·田 SHANTIAN</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600&family=Noto+Sans+TC:wght@300;400;500&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    :root {
+      --bg:    #131312;
+      --bg2:   #191917;
+      --bg3:   #1e1d1b;
+      --text:  #d8d3c8;
+      --muted: #6a6760;
+      --line:  #252320;
+      --qs:    #996040;
+      --dn:    #4d6b38;
+      --nav-h: 56px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;font-size:.9rem}
+
+    /* ── MAIN NAV ── */
+    nav.main-nav{
+      position:fixed;top:0;right:0;height:var(--nav-h);
+      z-index:500;padding:0 2.5rem;
+      display:flex;align-items:center;gap:2rem;
+      background:rgba(19,19,18,.92);
+      border-bottom:1px solid var(--line);
+      width:100%;justify-content:flex-end;
+    }
+    nav.main-nav a{font-size:.85rem;letter-spacing:.1em;text-decoration:none;color:rgba(255,255,255,.55);transition:color .25s}
+    nav.main-nav a.active{color:#c88050}
+    nav.main-nav a:hover{color:var(--text)}
+    .nav-brand{margin-right:auto;font-family:'Noto Serif TC',serif;font-size:1.05rem;font-weight:300;color:rgba(255,255,255,.5);letter-spacing:.15em}
+
+    /* ── LAYOUT ── */
+    .page-wrap{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      height:100vh;
+      padding-top:var(--nav-h);
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar{
+      background:var(--bg2);
+      border-right:1px solid var(--line);
+      display:flex;flex-direction:column;
+      overflow:hidden;
+    }
+    .sidebar-header{
+      padding:1.8rem 1.8rem 1.2rem;
+      border-bottom:1px solid var(--line);
+      flex-shrink:0;
+    }
+    .sidebar-eyebrow{font-size:.68rem;letter-spacing:.5em;color:var(--muted);margin-bottom:.3rem}
+    .sidebar-title{font-family:'Noto Serif TC',serif;font-size:1.5rem;font-weight:300;letter-spacing:.1em}
+
+    /* Filter tabs */
+    .filter-tabs{
+      display:flex;
+      border-bottom:1px solid var(--line);
+      flex-shrink:0;
+    }
+    .ftab{
+      flex:1;padding:.7rem 0;
+      font-size:.74rem;letter-spacing:.22em;
+      background:transparent;border:none;
+      color:var(--muted);cursor:pointer;
+      border-bottom:2px solid transparent;
+      transition:color .2s,border-color .2s;
+      font-family:'Noto Sans TC',sans-serif;
+    }
+    .ftab.active{color:var(--text);border-bottom-color:#c88050}
+    .ftab:hover{color:var(--text)}
+    .ftab.qs-tab.active{border-bottom-color:var(--qs)}
+    .ftab.dn-tab.active{border-bottom-color:var(--dn)}
+
+    /* Card list */
+    .card-list{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+    .card-list::-webkit-scrollbar{width:4px}
+    .card-list::-webkit-scrollbar-thumb{background:var(--line)}
+
+    .food-card{
+      padding:1.2rem 1.8rem;
+      border-bottom:1px solid var(--line);
+      cursor:pointer;
+      transition:background .2s;
+      display:flex;gap:1rem;align-items:flex-start;
+    }
+    .food-card:hover{background:var(--bg3)}
+    .food-card.highlighted{background:var(--bg3)}
+
+    .card-dot{
+      width:9px;height:9px;border-radius:50%;
+      flex-shrink:0;margin-top:.55rem;
+    }
+    .card-dot.qs{background:var(--qs)}
+    .card-dot.dn{background:var(--dn)}
+
+    .card-body{flex:1;min-width:0}
+    .card-name{font-family:'Noto Serif TC',serif;font-size:.98rem;font-weight:400;letter-spacing:.04em;margin-bottom:.2rem}
+    .card-type{font-size:.68rem;letter-spacing:.2em;margin-bottom:.35rem}
+    .card-type.qs{color:var(--qs)}.card-type.dn{color:var(--dn)}
+    .card-desc{font-size:.78rem;line-height:1.7;color:var(--muted)}
+    .card-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.55rem}
+    .card-tag{font-size:.64rem;letter-spacing:.12em;padding:.12rem .5rem;border:1px solid var(--line);color:var(--muted)}
+
+    /* ── MAP ── */
+    #map{
+      flex:1;
+      width:100%;
+      height:100%;
+      background:var(--bg);
+    }
+
+    /* Leaflet popup custom */
+    .leaflet-popup-content-wrapper{
+      background:var(--bg2);
+      border:1px solid var(--line);
+      border-radius:2px;
+      box-shadow:0 4px 24px rgba(0,0,0,.5);
+      color:var(--text);
+      font-family:'Noto Sans TC',sans-serif;
+    }
+    .leaflet-popup-tip{background:var(--bg2)}
+    .leaflet-popup-content{margin:14px 18px;min-width:180px}
+    .popup-name{font-family:'Noto Serif TC',serif;font-size:1rem;font-weight:400;margin-bottom:.2rem}
+    .popup-type{font-size:.68rem;letter-spacing:.22em;margin-bottom:.5rem}
+    .popup-type.qs{color:var(--qs)}.popup-type.dn{color:var(--dn)}
+    .popup-desc{font-size:.78rem;line-height:1.7;color:var(--muted)}
+    .leaflet-popup-close-button{color:var(--muted)!important;font-size:1rem!important;top:8px!important;right:10px!important}
+
+    /* Region toggle button */
+    .map-toggle{
+      position:absolute;bottom:2rem;right:2rem;z-index:400;
+      display:flex;flex-direction:column;gap:.4rem;
+    }
+    .mtbtn{
+      padding:.55rem 1.2rem;
+      background:var(--bg2);border:1px solid var(--line);
+      color:var(--muted);font-size:.72rem;letter-spacing:.2em;
+      font-family:'Noto Sans TC',sans-serif;cursor:pointer;
+      transition:color .2s,border-color .2s,background .2s;
+    }
+    .mtbtn:hover,.mtbtn.active{background:var(--bg3);color:var(--text);border-color:rgba(255,255,255,.2)}
+    .mtbtn.qs-btn.active{border-color:var(--qs);color:#c07850}
+    .mtbtn.dn-btn.active{border-color:var(--dn);color:#6a9450}
+
+    /* Count badge */
+    .count-badge{
+      font-size:.7rem;letter-spacing:.1em;color:var(--muted);
+      padding:.5rem 1.8rem;border-bottom:1px solid var(--line);
+      flex-shrink:0;
+    }
+    .count-badge span{color:var(--text)}
+
+    @media(max-width:860px){
+      .page-wrap{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+      .sidebar{max-height:45vh}
+      nav.main-nav{padding:0 1.2rem;gap:1rem}
+      .nav-brand{display:none}
+    }
+  </style>
+</head>
+<body>
+
+<nav class="main-nav">
+  <span class="nav-brand">山·田</span>
+  <a href="index.html">首頁</a>
+  <a href="compare.html">深入比較</a>
+  <a href="food.html" class="active">美食地圖</a>
+  <a href="sources.html">資料來源</a>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- ── SIDEBAR ── -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-eyebrow">FOOD MAP · 美食地圖</div>
+      <div class="sidebar-title">在地好味道</div>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="filter-tabs">
+      <button class="ftab active"        data-filter="all" >全部</button>
+      <button class="ftab qs-tab"        data-filter="qs"  >旗山</button>
+      <button class="ftab dn-tab"        data-filter="dn"  >斗南</button>
+    </div>
+
+    <div class="count-badge">顯示 <span id="countNum">12</span> 個地點</div>
+
+    <!-- Card list -->
+    <div class="card-list" id="cardList"></div>
+  </div>
+
+  <!-- ── MAP ── -->
+  <div style="position:relative;flex:1">
+    <div id="map"></div>
+    <div class="map-toggle">
+      <button class="mtbtn qs-btn active" id="btnQs">旗山</button>
+      <button class="mtbtn dn-btn active" id="btnDn">斗南</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ── DATA ── */
+const places = [
+  /* 旗山 */
+  {
+    id:'qs1', region:'qs', name:'旗山老街阿婆芭蕉冰',
+    type:'冰品・甜食', lat:22.8896, lng:120.4776,
+    desc:'旗山老街的招牌冰品，以在地香蕉製成，口感綿密清甜，是旗山必嚐伴手禮。',
+    tags:['老街必訪','芭蕉冰','在地特產']
+  },
+  {
+    id:'qs2', region:'qs', name:'旗山香蕉蛋糕老店',
+    type:'烘焙・伴手禮', lat:22.8900, lng:120.4782,
+    desc:'以旗山香蕉入味的軟式蛋糕，香氣濃郁，是遊客採購伴手禮的首選門店。',
+    tags:['香蕉蛋糕','伴手禮','排隊名店']
+  },
+  {
+    id:'qs3', region:'qs', name:'旗山肉圓',
+    type:'傳統小吃', lat:22.8892, lng:120.4770,
+    desc:'旗山式肉圓皮薄透亮、內餡飽滿，以清蒸方式呈現，佐以特製醬汁，風味獨特。',
+    tags:['傳統小吃','肉圓','在地早餐']
+  },
+  {
+    id:'qs4', region:'qs', name:'旗山米糕筒',
+    type:'傳統小吃', lat:22.8902, lng:120.4790,
+    desc:'以竹筒盛裝的糯米飯，配以香菇、蝦米等配料蒸製，是老一輩旗山人的懷舊滋味。',
+    tags:['米糕','懷舊古早味','竹筒']
+  },
+  {
+    id:'qs5', region:'qs', name:'旗山豬腳飯',
+    type:'正餐・小吃', lat:22.8888, lng:120.4784,
+    desc:'滷製入味的豬腳搭配白飯，是旗山市場一帶長久以來深受在地人喜愛的平價餐食。',
+    tags:['豬腳','市場美食','平價']
+  },
+  {
+    id:'qs6', region:'qs', name:'旗山傳統市場早餐',
+    type:'市場・早餐', lat:22.8895, lng:120.4768,
+    desc:'旗山傳統市場天未亮便人聲鼎沸，各式早點攤位林立，涵蓋粿仔湯、虱目魚粥等台式早餐。',
+    tags:['傳統市場','早餐','粿仔湯']
+  },
+  /* 斗南 */
+  {
+    id:'dn1', region:'dn', name:'斗南東市場（第二市場）',
+    type:'市場・食材', lat:22.6835, lng:120.4768,
+    desc:'雲林最具活力的傳統市場之一，清晨即聚集大批在地農產攤位，蔬果、豆類與熟食一應俱全。',
+    tags:['傳統市場','在地農產','早市']
+  },
+  {
+    id:'dn2', region:'dn', name:'斗南蚵仔麵線',
+    type:'傳統小吃', lat:22.6842, lng:120.4752,
+    desc:'以新鮮蚵仔搭配手工麵線，湯頭以大骨熬製，配上芫荽與蒜泥，是斗南在地早點好味道。',
+    tags:['蚵仔麵線','早餐','古早味']
+  },
+  {
+    id:'dn3', region:'dn', name:'斗南蒜頭酥店',
+    type:'農產加工・伴手禮', lat:22.6830, lng:120.4760,
+    desc:'以斗南出產的在地蒜頭製成酥炸蒜片，香氣濃郁、酥脆不油膩，是雲林農產代表伴手禮。',
+    tags:['蒜頭酥','雲林特產','伴手禮']
+  },
+  {
+    id:'dn4', region:'dn', name:'斗南碗粿老店',
+    type:'傳統小吃', lat:22.6838, lng:120.4748,
+    desc:'以米漿蒸製的碗粿，內藏豬肉與蛋黃，佐以甜醬油膏，是台灣西南部常見的懷舊點心。',
+    tags:['碗粿','傳統小吃','懷舊']
+  },
+  {
+    id:'dn5', region:'dn', name:'斗南花椰菜餐廳',
+    type:'農家料理', lat:22.6848, lng:120.4755,
+    desc:'以斗南盛產的花椰菜為主角，發展出多道創意料理，從涼拌到熱炒，展現在地農產的多元風味。',
+    tags:['花椰菜','農家料理','在地食材']
+  },
+  {
+    id:'dn6', region:'dn', name:'斗南米食館',
+    type:'正餐・米食', lat:22.6820, lng:120.4740,
+    desc:'以雲林在地米為主材料，提供控肉飯、米糕、竹筒飯等多種台式米食，推廣在地糧食文化。',
+    tags:['米食文化','在地米','台式料理']
+  },
+];
+
+/* ── MAP INIT ── */
+const map = L.map('map', {
+  center: [22.8, 120.477],
+  zoom: 10,
+  zoomControl: true,
+  preferCanvas: true
+});
+
+/* Dark tile layer */
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '© OpenStreetMap © CARTO',
+  maxZoom: 19
+}).addTo(map);
+
+/* Custom marker SVG */
+function makeIcon(region) {
+  const color = region === 'qs' ? '#996040' : '#4d6b38';
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" viewBox="0 0 22 30">
+    <path d="M11 0C4.925 0 0 4.925 0 11c0 7.667 11 19 11 19S22 18.667 22 11C22 4.925 17.075 0 11 0z" fill="${color}"/>
+    <circle cx="11" cy="11" r="4.5" fill="rgba(255,255,255,.85)"/>
+  </svg>`;
+  return L.divIcon({
+    html: svg,
+    iconSize: [22, 30],
+    iconAnchor: [11, 30],
+    popupAnchor: [0, -32],
+    className: ''
+  });
+}
+
+/* Create markers */
+const markerMap = {};
+const layerQs = L.layerGroup().addTo(map);
+const layerDn = L.layerGroup().addTo(map);
+
+places.forEach(p => {
+  const layer = p.region === 'qs' ? layerQs : layerDn;
+  const m = L.marker([p.lat, p.lng], { icon: makeIcon(p.region) })
+    .bindPopup(`
+      <div class="popup-name">${p.name}</div>
+      <div class="popup-type ${p.region}">${p.type}</div>
+      <div class="popup-desc">${p.desc}</div>
+    `)
+    .addTo(layer);
+  m.on('click', () => highlightCard(p.id));
+  markerMap[p.id] = m;
+});
+
+/* ── RENDER CARDS ── */
+let activeFilter = 'all';
+let showQs = true, showDn = true;
+
+function renderCards(filter) {
+  const list = document.getElementById('cardList');
+  const filtered = places.filter(p => filter === 'all' || p.region === filter);
+  document.getElementById('countNum').textContent = filtered.length;
+  list.innerHTML = filtered.map(p => `
+    <div class="food-card" data-id="${p.id}" data-region="${p.region}" onclick="flyTo('${p.id}')">
+      <div class="card-dot ${p.region}"></div>
+      <div class="card-body">
+        <div class="card-name">${p.name}</div>
+        <div class="card-type ${p.region}">${p.type}</div>
+        <div class="card-desc">${p.desc}</div>
+        <div class="card-tags">${p.tags.map(t=>`<span class="card-tag">${t}</span>`).join('')}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function flyTo(id) {
+  const p = places.find(x => x.id === id);
+  if (!p) return;
+  map.flyTo([p.lat, p.lng], 15, { duration: 1.2 });
+  setTimeout(() => markerMap[id].openPopup(), 1300);
+  highlightCard(id);
+}
+
+function highlightCard(id) {
+  document.querySelectorAll('.food-card').forEach(c => c.classList.remove('highlighted'));
+  const card = document.querySelector(`.food-card[data-id="${id}"]`);
+  if (card) {
+    card.classList.add('highlighted');
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+/* Filter tabs */
+document.querySelectorAll('.ftab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderCards(activeFilter);
+
+    /* Also fly to region */
+    if (activeFilter === 'qs') map.flyTo([22.889, 120.478], 14, {duration:1.2});
+    else if (activeFilter === 'dn') map.flyTo([22.683, 120.475], 14, {duration:1.2});
+    else map.flyTo([22.8, 120.477], 10, {duration:1.2});
+  });
+});
+
+/* Layer toggle buttons */
+document.getElementById('btnQs').addEventListener('click', () => {
+  showQs = !showQs;
+  document.getElementById('btnQs').classList.toggle('active', showQs);
+  showQs ? layerQs.addTo(map) : layerQs.remove();
+});
+document.getElementById('btnDn').addEventListener('click', () => {
+  showDn = !showDn;
+  document.getElementById('btnDn').classList.toggle('active', showDn);
+  showDn ? layerDn.addTo(map) : layerDn.remove();
+});
+
+/* Init */
+renderCards('all');
+
+/* Fit both regions on load */
+const bounds = L.latLngBounds(
+  places.map(p => [p.lat, p.lng])
+);
+map.fitBounds(bounds, { padding: [60, 60] });
+</script>
+</body>
+</html>

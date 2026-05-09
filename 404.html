@@ -1,100 +1,426 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 找不到頁面 - 旗山與斗南</title>
-    <!-- 引入 Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- 引入 Bootstrap Icons (用於地標圖示) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <!-- 引入 Google Fonts (Noto Sans TC) -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 - Page Not Found</title>
+  <style>
+    :root{
+      --bg: #1a1a18;
+      --paper: #f5f0e8;
+      --olive: #8aaa2b;
+      --leaf: #9cbf34;
+      --amber: #e8841a;
+      --line: rgba(245,240,232,.12);
+      --muted: rgba(245,240,232,.68);
+      --soft: rgba(245,240,232,.08);
+    }
 
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            font-family: 'Noto Sans TC', sans-serif;
-            height: 100%;
-        }
+    * { box-sizing: border-box; }
 
-        /* 滿版背景設定，加入半透明黑色遮罩讓白字更清晰 */
-        .error-section {
-            /* 這裡使用了一張帶有迷霧或空曠公路感的照片，呼應迷路的感覺 */
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
-                        url('https://cdn-smiletaiwan.cw.com.tw/article/202210/article-6344cb33dc250.jpg') center/cover no-repeat;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: #fff;
-        }
+    html, body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--paper);
+    }
 
-        /* 404 數字設計，延續首頁標題的風格 */
-        .error-code {
-            font-size: 8rem;
-            font-weight: 700;
-            letter-spacing: 0.5rem;
-            margin-bottom: 0;
-            text-shadow: 2px 2px 15px rgba(0,0,0,0.5);
-        }
+    body {
+      min-height: 100vh;
+      overflow: hidden;
+      font-family: "Source Han Sans TC", "Source Han Sans", "Noto Sans TC",
+                   "PingFang TC", "Microsoft JhengHei", sans-serif;
+    }
 
-        /* 點綴顏色，與首頁的 山.田 呼應 */
-        .error-code .dot {
-            color: #d8c16d; 
-        }
+    .page {
+      position: relative;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 32px;
+      isolation: isolate;
+    }
 
-        /* 提示文字 */
-        .error-text {
-            font-size: 1.5rem;
-            font-weight: 300;
-            letter-spacing: 0.2rem;
-            margin-bottom: 2.5rem;
-            text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
-        }
+    /* 背景層 */
+    .bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: -2;
+      contain: paint;
+    }
 
-        /* 回首頁按鈕設計 */
-        .btn-back-home {
-            background-color: transparent;
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            padding: 0.8rem 2.5rem;
-            font-size: 1.1rem;
-            letter-spacing: 2px;
-            text-decoration: none;
-            border-radius: 50px; /* 圓角按鈕增加親和力 */
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px); /* 微微的毛玻璃效果 */
-        }
+    .bg::before,
+    .bg::after {
+      content: "";
+      position: absolute;
+      inset: -20%;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(138,170,43,.20), transparent 24%),
+        radial-gradient(circle at 80% 30%, rgba(232,132,26,.14), transparent 22%),
+        radial-gradient(circle at 50% 80%, rgba(156,191,52,.12), transparent 20%),
+        radial-gradient(circle at 75% 75%, rgba(245,240,232,.08), transparent 18%);
+      background-size: 112% 112%;
+      animation: drift 18s ease-in-out infinite alternate;
+      opacity: .86;
+    }
 
-        .btn-back-home:hover {
-            background-color: #ff6600; /* 首頁導覽列 hover 的橘色 */
-            border-color: #ff6600;
-            color: #fff;
-            transform: translateY(-3px); /* 懸停時微微上浮 */
-            box-shadow: 0 5px 15px rgba(255, 102, 0, 0.4);
-        }
-    </style>
+    .bg::after {
+      inset: -30%;
+      background:
+        radial-gradient(circle at 30% 60%, rgba(138,170,43,.10), transparent 20%),
+        radial-gradient(circle at 60% 25%, rgba(232,132,26,.08), transparent 16%),
+        radial-gradient(circle at 70% 80%, rgba(156,191,52,.08), transparent 18%);
+      background-size: 118% 118%;
+      animation-duration: 26s;
+      animation-direction: alternate-reverse;
+      opacity: .72;
+    }
+
+    /* 細微網格與質感 */
+    .grid {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background-image:
+        linear-gradient(to right, rgba(245,240,232,.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(245,240,232,.04) 1px, transparent 1px);
+      background-size: 72px 72px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.55), rgba(0,0,0,.18) 70%, transparent);
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.55), rgba(0,0,0,.18) 70%, transparent);
+      animation: gridMove 28s linear infinite;
+      opacity: .28;
+      contain: paint;
+    }
+
+    .content {
+      width: min(960px, 100%);
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 28px;
+      align-items: center;
+      padding: 34px;
+      border: 1px solid rgba(245,240,232,.10);
+      background: linear-gradient(180deg, rgba(245,240,232,.04), rgba(245,240,232,.02));
+      box-shadow: 0 24px 80px rgba(0,0,0,.34);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .content::before {
+      content: "";
+      position: absolute;
+      inset: 16px;
+      border: 1px solid rgba(156,191,52,.10);
+      pointer-events: none;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .brand-mark {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--olive), var(--amber));
+      box-shadow: 0 0 24px rgba(138,170,43,.35);
+      animation: pulse 3.2s ease-in-out infinite;
+      flex: 0 0 auto;
+      backface-visibility: hidden;
+      will-change: transform, opacity;
+    }
+
+    .title {
+      margin: 0;
+      font-family: "PMingLiU", "新細明體", serif;
+      font-size: clamp(64px, 10vw, 108px);
+      line-height: .92;
+      letter-spacing: -.06em;
+      font-weight: 700;
+      color: var(--paper);
+    }
+
+    .title .accent {
+      color: var(--olive);
+    }
+
+    .copy {
+      margin-top: 18px;
+      max-width: 34rem;
+    }
+
+    .lead {
+      margin: 0 0 14px;
+      font-family: "PMingLiU", "新細明體", serif;
+      font-size: clamp(22px, 3vw, 32px);
+      line-height: 1.6;
+      color: var(--paper);
+    }
+
+    .desc {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.95;
+      color: var(--muted);
+      max-width: 38rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 46px;
+      padding: 0 18px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 14px;
+      letter-spacing: .08em;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+      border: 1px solid rgba(245,240,232,.16);
+      color: var(--paper);
+      background: rgba(245,240,232,.04);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(156,191,52,.42);
+      background: rgba(156,191,52,.08);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, rgba(138,170,43,.92), rgba(156,191,52,.88));
+      color: #141412;
+      border-color: transparent;
+      box-shadow: 0 10px 26px rgba(138,170,43,.18);
+    }
+
+    .btn.primary:hover {
+      background: linear-gradient(135deg, rgba(156,191,52,.98), rgba(138,170,43,.98));
+    }
+
+    .meta {
+      margin-top: 24px;
+      font-size: 13px;
+      line-height: 1.8;
+      color: rgba(245,240,232,.46);
+      max-width: 36rem;
+    }
+
+    .visual {
+      position: relative;
+      min-height: 420px;
+      display: grid;
+      place-items: center;
+    }
+
+    .ring {
+      position: absolute;
+      width: min(72vw, 420px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 1px solid rgba(245,240,232,.10);
+      box-shadow: inset 0 0 0 1px rgba(138,170,43,.06);
+      animation: spin 28s linear infinite;
+      backface-visibility: hidden;
+      will-change: transform;
+    }
+
+    .ring::before,
+    .ring::after {
+      content: "";
+      position: absolute;
+      inset: 14%;
+      border-radius: 50%;
+      border: 1px solid rgba(232,132,26,.12);
+    }
+
+    .ring::after {
+      inset: 28%;
+      border-color: rgba(156,191,52,.12);
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      animation: float 10s ease-in-out infinite;
+      opacity: .9;
+      backface-visibility: hidden;
+      will-change: transform;
+    }
+
+    .orb.one {
+      width: 84px;
+      height: 84px;
+      background: radial-gradient(circle at 30% 30%, rgba(156,191,52,.95), rgba(156,191,52,.08) 62%, transparent 72%);
+      top: 18%;
+      left: 18%;
+      animation-duration: 11s;
+    }
+
+    .orb.two {
+      width: 112px;
+      height: 112px;
+      background: radial-gradient(circle at 30% 30%, rgba(232,132,26,.88), rgba(232,132,26,.08) 62%, transparent 74%);
+      bottom: 16%;
+      right: 14%;
+      animation-duration: 13s;
+      animation-delay: -3s;
+    }
+
+    .orb.three {
+      width: 56px;
+      height: 56px;
+      background: radial-gradient(circle at 30% 30%, rgba(245,240,232,.88), rgba(245,240,232,.06) 62%, transparent 74%);
+      top: 54%;
+      left: 58%;
+      animation-duration: 9s;
+      animation-delay: -5s;
+    }
+
+    .center-card {
+      position: relative;
+      z-index: 1;
+      width: min(86%, 320px);
+      padding: 28px 24px;
+      border: 1px solid rgba(245,240,232,.12);
+      background: rgba(26,26,24,.42);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 14px 40px rgba(0,0,0,.22);
+      text-align: left;
+    }
+
+    .center-card .small {
+      font-size: 12px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: rgba(245,240,232,.50);
+      margin-bottom: 12px;
+    }
+
+    .center-card .line {
+      width: 64px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--olive), var(--amber));
+      margin-bottom: 14px;
+    }
+
+    .center-card .quote {
+      margin: 0;
+      font-family: "PMingLiU", "新細明體", serif;
+      font-size: 18px;
+      line-height: 1.9;
+      color: var(--paper);
+    }
+
+    @keyframes drift {
+      0%   { background-position: 46% 48%; }
+      50%  { background-position: 54% 52%; }
+      100% { background-position: 49% 56%; }
+    }
+
+    @keyframes gridMove {
+      from { background-position: 0 0; }
+      to   { background-position: 0 72px; }
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate3d(0,0,0) scale(1); }
+      50% { transform: translate3d(0,-14px,0) scale(1.04); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: .82; }
+      50% { transform: scale(1.18); opacity: 1; }
+    }
+
+    @media (max-width: 860px) {
+      .content {
+        grid-template-columns: 1fr;
+        padding: 24px;
+      }
+
+      .visual {
+        min-height: 300px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bg::before,
+      .bg::after,
+      .grid,
+      .ring,
+      .orb,
+      .brand-mark {
+        animation: none !important;
+      }
+    }
+  </style>
 </head>
 <body>
+  <main class="page">
+    <div class="bg" aria-hidden="true"></div>
+    <div class="grid" aria-hidden="true"></div>
 
-    <div class="error-section px-3">
-        <!-- 巨大錯誤碼 -->
-        <h1 class="error-code">404</h1>
-        
-        <!-- 呼應旅遊與地區主題的文案 -->
-        <p class="error-text">夜色曾替萬物收攏邊界，星子也曾在沉默裡為旅人標記方向。<br>可是你此刻走到的地方，只剩一片溫柔的空白，像風掠過草原後留下的靜。</p>
-        <p style="text-align: center;">該頁面不存在或是已被移除</p>
-        
-        <!-- 帶有地標 icon 的按鈕 -->
-        <!-- 請將 href 裡的 index.html 替換成你實際的首頁檔案名稱 -->
-        <a href="index.html" class="btn-back-home">
-            <i class="bi bi-geo-alt-fill me-2"></i>返回首頁
-        </a>
-    </div>
+    <section class="content" role="main" aria-labelledby="title">
+      <div>
+        <div class="brand">
+          <span class="brand-mark"></span>
+          <span>山·田 / Error Page</span>
+        </div>
 
+        <h1 id="title" class="title">4<span class="accent"> 0 </span>4</h1>
+
+        <div class="copy">
+          <p class="lead">你抵達的地方，像一頁被風輕輕翻過的空白。</p>
+          <p class="desc">
+            連結可能已經改道，內容也許悄悄搬離。
+            這裡暫時沒有答案，只有一段安靜的留白，讓你在迷路之前，先停一下。
+          </p>
+        </div>
+
+        <div class="actions">
+          <a class="btn primary" href="/">回到首頁</a>
+          <a class="btn" href="javascript:history.back()">返回上一頁</a>
+        </div>
+      </div>
+
+      <div class="visual" aria-hidden="true">
+        <div class="ring"></div>
+        <div class="orb one"></div>
+        <div class="orb two"></div>
+        <div class="orb three"></div>
+
+        <div class="center-card">
+          <div class="small">為什麼我會看到這個</div>
+          <div class="line"></div>
+          <p class="desc">此頁面不存在或已被移除。<br>你可以點擊回到首頁或回到上一頁。</p>
+        </div>
+      </div>
+    </section>
+  </main>
 </body>
 </html>
