@@ -10,24 +10,18 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root{
-      --bg:#131312;--bg2:#191917;--bg3:#1f1e1c;
+      --bg:#131312;--bg2:#191917;--bg3:#1e1d1b;
       --text:#d8d3c8;--muted:#6a6760;--line:#252320;
-      --qs:#996040;--qs-dim:#c07850;
-      --dn:#4d6b38;--dn-dim:#6a9450;
+      --qs:#996040;--qs-dim:#c07850;--qs-bg:#1a1310;
+      --dn:#4d6b38;--dn-dim:#6a9450;--dn-bg:#121a10;
       --nav-h:56px;
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:auto}
     body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;font-size:.9rem;line-height:1.8}
 
-    /* ── NAV (shared style) ── */
-    nav.main-nav{
-      position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:300;
-      display:flex;align-items:center;
-      padding:0 2.5rem;gap:2rem;
-      background:rgba(19,19,18,.9);
-      border-bottom:1px solid var(--line);
-    }
+    /* ── NAV ── */
+    nav.main-nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:300;display:flex;align-items:center;padding:0 2.5rem;gap:2rem;background:rgba(19,19,18,.9);border-bottom:1px solid var(--line)}
     .nav-brand{margin-right:auto;font-family:'Noto Serif TC',serif;font-size:.95rem;font-weight:300;letter-spacing:.22em;color:rgba(255,255,255,.38);text-decoration:none}
     nav.main-nav a{font-size:.83rem;letter-spacing:.1em;text-decoration:none;color:rgba(255,255,255,.48);transition:color .25s}
     nav.main-nav a.active{color:#c88050}
@@ -59,225 +53,290 @@
     #subNav a:hover{color:rgba(255,255,255,.75)}
     #subNav a.active{color:var(--qs-dim);/*background:rgba(255,255,255,.07)*/}
 
-
     /* ── PAGE HERO ── */
-    .page-hero{display:grid;grid-template-columns:1fr 1fr;height:36vh;min-height:210px;margin-top:var(--nav-h);position:relative;overflow:hidden}
+    .page-hero{display:grid;grid-template-columns:1fr 1fr;height:38vh;min-height:220px;margin-top:var(--nav-h);position:relative;overflow:hidden}
     .hero-half{background-size:cover;background-position:center;position:relative}
-    .hero-half::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.46)}
+    .hero-half::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.45)}
     .hero-half.qs{background-image:url('./img/c_qs_cv.jpg')}
     .hero-half.dn{background-image:url('./img/c_dn_cv.png')}
     .hero-label{position:absolute;bottom:1.8rem;left:2rem;z-index:2}
     .hero-half.dn .hero-label{left:auto;right:2rem;text-align:right}
-    .hero-name{font-family:'Noto Serif TC',serif;font-size:clamp(1.2rem,2vw,1.7rem);font-weight:300;letter-spacing:.14em;color:rgba(255,255,255,.9)}
+    .hero-name{font-family:'Noto Serif TC',serif;font-size:clamp(1.2rem,2vw,1.8rem);font-weight:300;letter-spacing:.14em;color:rgba(255,255,255,.9)}
     .hero-sub{font-size:.65rem;letter-spacing:.32em;color:rgba(255,255,255,.36);margin-top:.12rem}
-    .hero-vs{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;font-family:'Playfair Display',serif;font-style:italic;font-size:.76rem;color:rgba(255,255,255,.28)}
+    .hero-vs{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;font-family:'Playfair Display',serif;font-style:italic;font-size:.78rem;color:rgba(255,255,255,.28)}
 
     /* ── SECTION SHELL ── */
-    .sec{padding:5.5rem 0;border-bottom:1px solid var(--line)}
+    .sec{padding:5rem 0;border-bottom:1px solid var(--line)}
     .sec.alt{background:var(--bg2)}
-    .sec:last-of-type{border-bottom:none}
     .sec-inner{max-width:1200px;margin:0 auto;padding:0 3rem}
-    .eyebrow{font-size:.66rem;letter-spacing:.5em;color:var(--muted);margin-bottom:.35rem}
-    .sec-title{font-family:'Noto Serif TC',serif;font-size:clamp(1.2rem,1.9vw,1.6rem);font-weight:300;letter-spacing:.06em;margin-bottom:3rem;color:var(--text)}
-    .region-gap{height:2.5rem}
+    .eyebrow{font-size:.64rem;letter-spacing:.5em;color:var(--muted);margin-bottom:.4rem}
+    .sec-title{font-family:'Noto Serif TC',serif;font-size:clamp(1.2rem,1.9vw,1.6rem);font-weight:300;letter-spacing:.06em;margin-bottom:2.8rem;color:var(--text)}
 
     /* Reveal */
-    .rv{opacity:0;transform:translateY(14px);transition:opacity .7s ease,transform .7s ease}
+    .rv{opacity:0;transform:translateY(16px);transition:opacity .75s ease,transform .75s ease}
     .rv.on{opacity:1;transform:translateY(0)}
 
-    /* ════ 1. BASIC ════ */
-    .basic-wrap{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line)}
-    .basic-col{background:var(--bg);padding:2.2rem 2.5rem}
-    .col-head{display:flex;align-items:center;gap:.75rem;padding-bottom:1rem;margin-bottom:1.5rem;border-bottom:1px solid var(--line)}
+    /* ── DUAL REGION LAYOUT (with gap) ── */
+    .dual{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+    .dual .region-col{padding:2.5rem;border-top:2px solid var(--line)}
+    .dual .region-col.qs-col{border-top-color:var(--qs);background:var(--qs-bg)}
+    .dual .region-col.dn-col{border-top-color:var(--dn);background:var(--dn-bg)}
+    .region-head{display:flex;align-items:center;gap:.75rem;margin-bottom:1.8rem;padding-bottom:1rem;border-bottom:1px solid var(--line)}
     .rdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
     .rdot.qs{background:var(--qs)}.rdot.dn{background:var(--dn)}
-    .col-name{font-family:'Noto Serif TC',serif;font-size:1.3rem;font-weight:400;letter-spacing:.08em}
-    .col-sub{font-size:.67rem;letter-spacing:.25em;color:var(--muted)}
+    .rname{font-family:'Noto Serif TC',serif;font-size:1.25rem;font-weight:400;letter-spacing:.08em}
+    .rsub{font-size:.66rem;letter-spacing:.25em;color:var(--muted)}
+
+    /* ── 1. BASIC DATA ── */
     .dr{display:flex;justify-content:space-between;align-items:baseline;padding:.6rem 0;border-bottom:1px solid var(--line);font-size:.82rem}
     .dr:last-child{border-bottom:none}
-    .dk{color:var(--muted)}
-    .dv{font-family:'Playfair Display',serif;font-size:.88rem}
+    .dk{color:var(--muted)}.dv{font-family:'Playfair Display',serif;font-size:.88rem}
     .dv.qs{color:var(--qs-dim)}.dv.dn{color:var(--dn-dim)}
 
-    /* ════ 2. HISTORY — horizontal scroll, NO outer border ════ */
-    .hist-scroll-hint{font-size:.68rem;letter-spacing:.25em;color:var(--muted);margin-bottom:1.4rem;display:flex;align-items:center;gap:.5rem}
-    .hist-scroll-hint::after{content:'→';opacity:.45}
+    /* ── 2. HISTORY — horizontal dot timeline ── */
+    .hist-region{margin-bottom:3rem}
+    .hist-region:last-child{margin-bottom:0}
+    .hist-region-header{display:flex;align-items:center;gap:.7rem;margin-bottom:1.8rem;padding-bottom:.8rem;border-bottom:1px solid var(--line)}
+    .hist-region-label{font-size:.7rem;letter-spacing:.3em;color:var(--muted)}
+    .hist-region-name{font-family:'Noto Serif TC',serif;font-size:1rem;font-weight:400}
 
-    /* no outer border */
-    .hist-outer{overflow:hidden}
+    .hist-scroll-outer{overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;scrollbar-color:var(--line) transparent;-webkit-overflow-scrolling:touch}
+    .hist-scroll-outer::-webkit-scrollbar{height:3px}
+    .hist-scroll-outer::-webkit-scrollbar-thumb{background:var(--line)}
 
-    .hist-row{display:flex;align-items:stretch}
-    .hist-row+.hist-row{border-top:1px solid var(--line)}
-
-    .hist-row-label{
-      width:72px;min-width:72px;flex-shrink:0;
-      display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
-      padding:1.6rem .6rem;
-      border-right:1px solid var(--line);
-      position:sticky;left:0;z-index:5;
-      background:var(--bg2);
+    .hist-track{
+      display:flex;
+      min-width:max-content;
+      padding:0 1rem 1.5rem;
+      position:relative;
     }
-    .rl-dot{width:7px;height:7px;border-radius:50%;margin-bottom:.6rem}
-    .qs-label .rl-dot{background:var(--qs)}
-    .dn-label .rl-dot{background:var(--dn)}
-    .rl-name{font-family:'Noto Serif TC',serif;font-size:.95rem;font-weight:400;writing-mode:vertical-rl;letter-spacing:.12em}
-    .qs-label .rl-name{color:var(--qs-dim)}
-    .dn-label .rl-name{color:var(--dn-dim)}
+    /* the horizontal line */
+    .hist-track::before{
+      content:'';
+      position:absolute;
+      top:calc(1.1rem + .5rem); /* year text height + gap */
+      left:1rem;right:1rem;
+      height:1px;
+      background:var(--line);
+      z-index:0;
+    }
 
-    .hist-cards-scroll{
-      overflow-x:auto;overflow-y:hidden;display:flex;flex:1;
-      scrollbar-width:thin;scrollbar-color:var(--line) transparent;
-      -webkit-overflow-scrolling:touch;position:relative;
-    }
-    .hist-cards-scroll::-webkit-scrollbar{height:3px}
-    .hist-cards-scroll::-webkit-scrollbar-thumb{background:var(--line)}
-    /* timeline line */
-    .hist-cards-scroll::before{
-      content:'';position:absolute;top:1.95rem;left:0;right:0;height:1px;
-      background:var(--line);pointer-events:none;z-index:0;
-    }
-    .hist-card{
-      min-width:210px;max-width:210px;
-      padding:1.5rem 1.3rem 1.8rem;
-      border-right:1px solid var(--line);flex-shrink:0;
-      opacity:0;transform:translateX(10px);
+    .hist-item{
+      width:190px;flex-shrink:0;
+      display:flex;flex-direction:column;
+      align-items:flex-start;
+      padding-right:0;
+      opacity:0;transform:translateY(10px);
       transition:opacity .55s ease,transform .55s ease;
     }
-    .hist-card.on{opacity:1;transform:translateX(0)}
-    .hist-card:last-child{border-right:none}
-    .hist-card::before{
-      content:'';display:block;width:8px;height:8px;border-radius:50%;
-      background:var(--bg);border:1.5px solid;
-      margin-bottom:.9rem;position:relative;z-index:1;
-    }
-    .qs-row .hist-card::before{border-color:var(--qs)}
-    .dn-row .hist-card::before{border-color:var(--dn)}
-    .hc-yr{font-family:'Playfair Display',serif;font-size:.73rem;color:var(--muted);letter-spacing:.1em;margin-bottom:.38rem}
-    .hc-ev{font-size:.79rem;line-height:1.72;color:rgba(216,211,200,.75)}
+    .hist-item.on{opacity:1;transform:translateY(0)}
 
-    /* ════ 3. POPULATION ════ */
+    .hist-item-year{
+      font-family:'Playfair Display',serif;
+      font-size:.74rem;color:var(--muted);
+      letter-spacing:.1em;
+      margin-bottom:.5rem;
+      padding-left:12px;
+      line-height:1.1rem;
+    }
+    .hist-item-dot{
+      width:11px;height:11px;
+      border-radius:50%;
+      background:var(--bg);
+      border:1.5px solid var(--muted);
+      margin-left:7px;  /* center within 190px column */
+      margin-bottom:.8rem;
+      position:relative;z-index:1;
+      flex-shrink:0;
+    }
+    .qs-region .hist-item-dot{border-color:var(--qs)}
+    .dn-region .hist-item-dot{border-color:var(--dn)}
+    .hist-item-content{padding-left:12px;padding-right:16px}
+    .hist-item-title{font-family:'Noto Serif TC',serif;font-size:.84rem;font-weight:400;color:var(--text);margin-bottom:.3rem;line-height:1.3}
+    .hist-item-desc{font-size:.76rem;line-height:1.72;color:var(--muted)}
+
+    .hist-scroll-hint{font-size:.67rem;letter-spacing:.25em;color:var(--muted);margin-bottom:1rem;display:flex;align-items:center;gap:.4rem}
+    .hist-scroll-hint::after{content:'→';opacity:.4}
+
+    /* ── 3. POPULATION ── */
     .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
     .chart-panel{background:var(--bg);padding:1.8rem 1.5rem 1.2rem}
-    .chart-label{font-size:.67rem;letter-spacing:.28em;color:var(--muted);margin-bottom:1.1rem}
-    .chart-note{font-size:.66rem;color:var(--muted);margin-top:.5rem}
+    .chart-label{font-size:.66rem;letter-spacing:.28em;color:var(--muted);margin-bottom:1.1rem}
+    .chart-note{font-size:.65rem;color:var(--muted);margin-top:.5rem}
 
-    /* ════ 4. TRANSPORT ════ */
-    .transport-table{width:100%;border:1px solid var(--line);border-collapse:collapse}
-    .transport-table th,.transport-table td{padding:.85rem 1.3rem;border-bottom:1px solid var(--line);border-right:1px solid var(--line);text-align:left;font-size:.83rem}
-    .transport-table tr:last-child td{border-bottom:none}
-    .transport-table th{font-size:.66rem;letter-spacing:.28em;color:var(--muted);font-weight:400;background:var(--bg2);font-family:'Noto Sans TC',sans-serif}
-    .transport-table .type-col{color:var(--muted);font-size:.77rem;letter-spacing:.1em;background:var(--bg2);width:90px}
-    .transport-table td:last-child,.transport-table th:last-child{border-right:none}
-    .qs-cell{color:var(--qs-dim)}.dn-cell{color:var(--dn-dim)}
-    .none-cell{color:var(--muted);opacity:.5;font-style:italic;font-size:.8rem}
-    .t-dot{display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:.45rem;vertical-align:middle;position:relative;top:-1px}
-    .t-qs{background:var(--qs)}.t-dn{background:var(--dn)}
+    /* ── 4. TRANSPORT ── */
+    .transport-block{border:1px solid var(--line)}
+    .transport-block+.transport-block{border-top:none;margin-top:2.5rem}
 
-    /* Transport maps */
-    .transport-maps{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);margin-top:2px}
-    .tmap-wrap{background:var(--bg)}
-    .tmap-label{font-size:.66rem;letter-spacing:.3em;color:var(--muted);padding:.7rem 1rem;border-bottom:1px solid var(--line)}
-    .tmap{height:240px}
+    .transport-header{display:flex;align-items:center;gap:1rem;padding:.9rem 1.4rem;border-bottom:1px solid var(--line);background:var(--bg2)}
+    .transport-header-name{font-family:'Noto Serif TC',serif;font-size:1.05rem;font-weight:400;letter-spacing:.08em}
+    .transport-header-sum{font-size:.7rem;letter-spacing:.12em;color:var(--muted);margin-left:.5rem}
 
-    /* Transport image carousels */
-    .transport-carousels{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);margin-top:2px}
-    .tc-wrap{background:var(--bg);overflow:hidden}
+    .transport-main{display:grid;grid-template-columns:1fr 1fr;height:280px}
 
-    /* ════ 5. EDUCATION ════ */
-    .edu-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line)}
-    .edu-col{background:var(--bg);padding:2.2rem 2.5rem}
+    /* carousel side — same height as map */
+    .transport-car-col{overflow:hidden;height:280px;position:relative}
+    .transport-car-col .carousel,
+    .transport-car-col .carousel-inner,
+    .transport-car-col .carousel-item{height:100%}
+    .transport-car-col .carousel-item img{width:100%;height:100%;object-fit:cover;filter:saturate(.62) brightness(.78)}
+    .carousel-caption{bottom:0;left:0;right:0;background:rgba(0,0,0,.52);border-radius:0;padding:.45rem .9rem;text-align:left}
+    .carousel-caption p{font-size:.69rem;letter-spacing:.08em;margin:0;color:rgba(255,255,255,.72)}
+
+    /* map side */
+    .transport-map-col{height:280px;border-left:1px solid var(--line)}
+    .tmap{height:100%}
+
+    /* info table below */
+    .transport-info{padding:0;border-top:1px solid var(--line)}
+    .t-table{width:100%;border-collapse:collapse}
+    .t-table tr{border-bottom:1px solid var(--line)}
+    .t-table tr:last-child{border-bottom:none}
+    .t-table td{padding:.7rem 1.4rem;font-size:.82rem}
+    .t-table .t-key{color:var(--muted);width:120px;font-size:.77rem}
+    .t-table .t-val-qs{color:var(--qs-dim)}
+    .t-table .t-val-dn{color:var(--dn-dim)}
+
+    /* tags row */
+    .transport-tags{display:flex;flex-wrap:wrap;gap:.35rem;padding:.9rem 1.4rem;border-top:1px solid var(--line);background:var(--bg)}
+    .t-tag{font-size:.65rem;letter-spacing:.14em;padding:.15rem .6rem;border:1px solid var(--line);color:var(--muted)}
+
+    /* HIDE all carousel square indicators globally */
+    .carousel-indicators{display:none!important}
+    .carousel-control-prev-icon,.carousel-control-next-icon{width:.9rem;height:.9rem}
+    .carousel-control-prev,.carousel-control-next{width:1.8rem}
+
+    /* ── 5. EDUCATION ── */
     .edu-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);margin:1.5rem 0}
-    .edu-stat{background:var(--bg2);padding:1.3rem 1rem;text-align:center}
+    .edu-stat{background:var(--bg3);padding:1.3rem 1rem;text-align:center}
     .edu-num{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:700;line-height:1;margin-bottom:.3rem}
     .qs-col .edu-num{color:var(--qs-dim)}.dn-col .edu-num{color:var(--dn-dim)}
-    .edu-stat-label{font-size:.67rem;letter-spacing:.22em;color:var(--muted)}
-    .edu-schools{list-style:none;padding:0;margin-top:1.2rem}
-    .edu-schools li{padding:.42rem 0;border-bottom:1px solid var(--line);font-size:.81rem;display:flex;justify-content:space-between;align-items:center}
+    .edu-stat-label{font-size:.65rem;letter-spacing:.22em;color:var(--muted)}
+    .edu-schools{list-style:none;padding:0}
+    .edu-schools li{padding:.42rem 0;border-bottom:1px solid var(--line);font-size:.8rem;display:flex;justify-content:space-between;align-items:center}
     .edu-schools li:last-child{border-bottom:none}
-    .edu-school-name{color:var(--text)}
-    .edu-school-level{font-size:.65rem;letter-spacing:.15em;color:var(--muted)}
-
-    /* Education carousel */
-    .edu-carousel-wrap{margin-top:2px;background:var(--line);display:grid;grid-template-columns:1fr 1fr;gap:1px}
+    .edu-school-name{color:var(--text)}.edu-school-level{font-size:.64rem;letter-spacing:.14em;color:var(--muted)}
+    .edu-carousel-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);margin-top:2.5rem}
     .edu-carousel-panel{background:var(--bg);overflow:hidden}
-    .edu-carousel-label{font-size:.66rem;letter-spacing:.3em;color:var(--muted);padding:.7rem 1rem;border-bottom:1px solid var(--line)}
+    .edu-carousel-label{font-size:.65rem;letter-spacing:.3em;color:var(--muted);padding:.65rem 1rem;border-bottom:1px solid var(--line)}
 
-    /* ════ 6. LIVING ════ */
-    .living-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line)}
-    .living-col{background:var(--bg);padding:2.2rem 2.5rem}
-    .living-category{margin-bottom:1.8rem}
-    .living-cat-label{font-size:.65rem;letter-spacing:.38em;color:var(--muted);margin-bottom:.8rem;padding-bottom:.5rem;border-bottom:1px solid var(--line)}
-    .living-item{display:flex;align-items:center;gap:.7rem;padding:.38rem 0;font-size:.81rem;color:rgba(216,211,200,.8)}
+    /* ── 6. LIVING ── */
+    .living-category{margin-bottom:1.6rem}
+    .living-cat-label{font-size:.63rem;letter-spacing:.38em;color:var(--muted);margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid var(--line)}
+    .living-item{display:flex;align-items:center;gap:.65rem;padding:.36rem 0;font-size:.8rem;color:rgba(216,211,200,.8)}
     .living-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
     .qs-col .living-dot{background:var(--qs)}.dn-col .living-dot{background:var(--dn)}
 
-    /* ════ 7. ENVIRONMENT — carousel blocks ════ */
+    /* ── 7. LANDMARK — horizontal scroll photos ── */
+    .landmark-region{margin-bottom:0}
+    .landmark-region+.landmark-region{margin-top:3rem}
+
+    .landmark-intro{display:grid;grid-template-columns:180px 1fr;border:1px solid var(--line)}
+    .landmark-intro-label{padding:1.8rem;border-right:1px solid var(--line);display:flex;flex-direction:column;justify-content:center;background:var(--bg2)}
+    .landmark-intro-tag{font-size:.62rem;letter-spacing:.35em;color:var(--muted);margin-bottom:.45rem;display:flex;align-items:center;gap:.4rem}
+    .landmark-intro-name{font-family:'Noto Serif TC',serif;font-size:1.45rem;font-weight:300;letter-spacing:.1em}
+    .landmark-intro-text{font-size:.82rem;line-height:1.9;color:var(--muted);padding:1.8rem 2rem;display:flex;align-items:center}
+
+    /* horizontal scroll photo strip */
+    .landmark-hscroll-wrap{
+      overflow-x:auto;overflow-y:hidden;
+      margin-top:2px;
+      scrollbar-width:thin;scrollbar-color:var(--line) transparent;
+      -webkit-overflow-scrolling:touch;
+    }
+    .landmark-hscroll-wrap::-webkit-scrollbar{height:3px}
+    .landmark-hscroll-wrap::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px}
+
+    .landmark-hscroll{
+      display:flex;
+      gap:2px;
+      background:var(--line);
+      min-width:max-content;
+    }
+
+    .lm-hphoto{
+      width:300px;flex-shrink:0;
+      background:var(--bg);
+      overflow:hidden;
+    }
+    .lm-hphoto-img{
+      width:100%;height:210px;
+      overflow:hidden;position:relative;
+    }
+    .lm-hphoto-img img{
+      width:100%;height:100%;object-fit:cover;
+      filter:saturate(.62) brightness(.78);
+      transition:transform .65s ease,filter .4s;
+      display:block;
+    }
+    .lm-hphoto:hover .lm-hphoto-img img{transform:scale(1.05);filter:saturate(.8) brightness(.88)}
+    .lm-hphoto-cap{
+      padding:.85rem 1rem 1rem;
+      border-top:1px solid var(--line);
+    }
+    .lm-hphoto-cap-title{font-family:'Noto Serif TC',serif;font-size:.84rem;font-weight:400;color:var(--text);margin-bottom:.22rem}
+    .lm-hphoto-cap-desc{font-size:.75rem;line-height:1.7;color:var(--muted)}
+
+    /* ── 8. ENVIRONMENT ── */
     .env-block{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line)}
     .env-block+.env-block{margin-top:2.5rem}
     .env-carousel{overflow:hidden;aspect-ratio:4/3;background:var(--bg3)}
-    /* carousel fills container */
     .env-carousel .carousel,.env-carousel .carousel-inner,.env-carousel .carousel-item{height:100%}
-    .env-carousel .carousel-item img{width:100%;height:100%;object-fit:cover;filter:saturate(.65) brightness(.88);transition:transform .6s,filter .4s}
-    .env-carousel:hover .carousel-item img{transform:scale(1.03);filter:saturate(.8) brightness(.95)}
-    .env-txt{padding:2.5rem;display:flex;flex-direction:column;justify-content:center;border-left:1px solid var(--line)}
+    .env-carousel .carousel-item img{width:100%;height:100%;object-fit:cover;filter:saturate(.62) brightness(.78)}
+    .env-txt{padding:2.2rem;display:flex;flex-direction:column;justify-content:center;border-left:1px solid var(--line)}
     .env-block.flip .env-txt{border-left:none;border-right:1px solid var(--line);order:-1}
-    .rtag{font-size:.65rem;letter-spacing:.38em;display:flex;align-items:center;gap:.5rem;margin-bottom:.7rem}
-    .env-sub{font-family:'Noto Serif TC',serif;font-size:1.1rem;font-weight:400;margin-bottom:.9rem;letter-spacing:.04em}
-    .env-desc{font-size:.81rem;line-height:1.95;color:var(--muted);margin-bottom:1.1rem}
-    .tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.15rem}
-    .tag{font-size:.64rem;letter-spacing:.12em;padding:.13rem .52rem;border:1px solid var(--line);color:var(--muted)}
+    .rtag{font-size:.64rem;letter-spacing:.38em;display:flex;align-items:center;gap:.5rem;margin-bottom:.65rem}
+    .env-sub{font-family:'Noto Serif TC',serif;font-size:1.1rem;font-weight:400;margin-bottom:.85rem;letter-spacing:.04em}
+    .env-desc{font-size:.81rem;line-height:1.95;color:var(--muted);margin-bottom:1rem}
+    .tags{display:flex;flex-wrap:wrap;gap:.3rem}
+    .tag{font-size:.63rem;letter-spacing:.12em;padding:.13rem .52rem;border:1px solid var(--line);color:var(--muted)}
 
-    /* Shared carousel style */
-    .carousel-caption{bottom:0;left:0;right:0;background:rgba(0,0,0,.5);border-radius:0;padding:.5rem 1rem;text-align:left}
-    .carousel-caption p{font-size:.7rem;letter-spacing:.08em;margin:0;color:rgba(255,255,255,.72)}
-    .carousel-indicators [data-bs-target]{width:16px;height:1.5px;border-radius:0;background:rgba(255,255,255,.45)}
-    .carousel-control-prev-icon,.carousel-control-next-icon{width:1rem;height:1rem}
-    .carousel-control-prev,.carousel-control-next{width:2rem}
+    /* ── AUTHOR ── */
+    .author-col{padding:2.8rem}
+    .author-quote-mark{font-family:'Playfair Display',serif;font-size:4rem;line-height:.8;margin-bottom:1rem;opacity:.18}
+    .qs-col .author-quote-mark{color:var(--qs)}.dn-col .author-quote-mark{color:var(--dn)}
+    .author-region-tag{font-size:.64rem;letter-spacing:.38em;display:flex;align-items:center;gap:.5rem;margin-bottom:1rem}
+    .author-text{font-size:.87rem;line-height:2.05;color:rgba(216,211,200,.8);font-family:'Noto Serif TC',serif;font-weight:300}
+    .author-sig{margin-top:2rem;padding-top:1.2rem;border-top:1px solid var(--line);font-size:.7rem;letter-spacing:.2em;color:var(--muted)}
 
-    /* ════ AUTHOR SECTION ════ */
-    .author-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line)}
-    .author-col{background:var(--bg);padding:3rem 3rem 2.5rem}
-    .author-quote-mark{font-family:'Playfair Display',serif;font-size:4rem;line-height:.8;margin-bottom:1rem;opacity:.25}
-    .qs-col .author-quote-mark{color:var(--qs)}
-    .dn-col .author-quote-mark{color:var(--dn)}
-    .author-region-tag{font-size:.66rem;letter-spacing:.38em;display:flex;align-items:center;gap:.5rem;margin-bottom:1rem}
-    .author-text{font-size:.88rem;line-height:2;color:rgba(216,211,200,.8);font-family:'Noto Serif TC',serif;font-weight:300}
-    .author-sig{margin-top:2rem;padding-top:1.2rem;border-top:1px solid var(--line);font-size:.72rem;letter-spacing:.2em;color:var(--muted)}
+    /* ── LEAFLET ── */
+    .leaflet-tile-pane{filter:brightness(.82)}
+    .leaflet-popup-content-wrapper{background:var(--bg2);border:1px solid var(--line);border-radius:2px;box-shadow:0 4px 20px rgba(0,0,0,.45);color:var(--text);font-family:'Noto Sans TC',sans-serif}
+    .leaflet-popup-tip{background:var(--bg2)}
+    .leaflet-popup-content{margin:10px 14px;font-size:.78rem}
+    .leaflet-popup-close-button{color:var(--muted)!important}
+    .leaflet-control-zoom a{background:var(--bg2)!important;color:var(--text)!important;border-color:var(--line)!important}
 
-    /* ════ FOOTER ════ */
+    /* ── FOOTER ── */
     footer{border-top:1px solid var(--line);padding:2rem 3rem;display:flex;justify-content:space-between;align-items:center;font-size:.7rem;letter-spacing:.15em;color:var(--muted)}
     .footer-brand{font-family:'Noto Serif TC',serif;font-size:.95rem;color:rgba(255,255,255,.3)}
     footer a{color:var(--muted);text-decoration:none;transition:color .2s}
     footer a:hover{color:var(--text)}
 
-    /* ════ LEAFLET DARK OVERRIDES ════ */
-    .leaflet-tile-pane{filter:brightness(.85)}
-    .leaflet-popup-content-wrapper{background:var(--bg2);border:1px solid var(--line);border-radius:2px;box-shadow:0 4px 20px rgba(0,0,0,.45);color:var(--text);font-family:'Noto Sans TC',sans-serif}
-    .leaflet-popup-tip{background:var(--bg2)}
-    .leaflet-popup-content{margin:12px 16px;min-width:140px;font-size:.8rem;line-height:1.6}
-    .leaflet-popup-close-button{color:var(--muted)!important}
-    .leaflet-control-zoom a{background:var(--bg2)!important;color:var(--text)!important;border-color:var(--line)!important}
-
-    /* ════ RWD ════ */
-    @media(max-width:860px){
-      .basic-wrap,.edu-grid,.living-grid,.edu-carousel-wrap,.transport-maps,.transport-carousels,.author-grid,.env-block,.chart-grid{grid-template-columns:1fr}
+    /* ── RWD ── */
+    @media(max-width:900px){
+      .dual,.chart-grid,.transport-main,.env-block,.edu-carousel-wrap,.landmark-intro{grid-template-columns:1fr}
+      .dual{gap:1rem}
+      .transport-map-col{border-left:none;border-top:1px solid var(--line)}
+      .transport-main{height:auto}
+      .transport-car-col,.transport-map-col{height:220px}
       .env-txt{border-left:none!important;border-right:none!important;border-top:1px solid var(--line)}
       .env-block.flip .env-txt{order:0}
-      .transport-table .type-col{display:none}
+      .landmark-intro-label{border-right:none;border-bottom:1px solid var(--line)}
+      .lm-hphoto{width:260px}
+      .lm-hphoto-img{height:175px}
       footer{flex-direction:column;gap:.4rem;text-align:center}
       nav.main-nav{padding:0 1.2rem;gap:1rem}
       .nav-brand{display:none}
       .sec-inner{padding:0 1.5rem}
-      #subNav a{padding:.48rem .7rem;font-size:.68rem;letter-spacing:.12em}
+      #subNav a{padding:.45rem .65rem;font-size:.67rem;letter-spacing:.1em}
       .author-col{padding:2rem 1.8rem}
-      .hist-row-label{width:60px;min-width:60px}
-      .hist-card{min-width:185px;max-width:185px}
     }
   </style>
 </head>
 <body>
 
-<!-- ════ MAIN NAV ════ -->
+<!-- NAV -->
 <nav class="main-nav">
   <a class="nav-brand" href="index.html">山·田</a>
   <a href="index.html">首頁</a>
@@ -286,7 +345,7 @@
   <a href="sources.html">資料來源</a>
 </nav>
 
-<!-- ════ FLOATING SUB NAV ════ -->
+<!-- SUB NAV -->
 <div id="subNav">
   <a href="#basic">基本資料</a>
   <a href="#history">歷史</a>
@@ -294,28 +353,25 @@
   <a href="#transport">交通</a>
   <a href="#education">教育</a>
   <a href="#living">生活機能</a>
+  <a href="#landmark">核心場域</a>
   <a href="#environment">環境</a>
 </div>
 
-<!-- ════ PAGE HERO ════ -->
+<!-- PAGE HERO -->
 <div class="page-hero">
-  <div class="hero-half qs">
-    <div class="hero-label"><div class="hero-name">旗山</div><div class="hero-sub">QISHAN · KAOHSIUNG</div></div>
-  </div>
-  <div class="hero-half dn">
-    <div class="hero-label"><div class="hero-name">斗南</div><div class="hero-sub">DOUNAN · YUNLIN</div></div>
-  </div>
+  <div class="hero-half qs"><div class="hero-label"><div class="hero-name">旗山</div><div class="hero-sub">QISHAN · KAOHSIUNG</div></div></div>
+  <div class="hero-half dn"><div class="hero-label"><div class="hero-name">斗南</div><div class="hero-sub">DOUNAN · YUNLIN</div></div></div>
   <div class="hero-vs">vs</div>
 </div>
 
-<!-- ════════ 1. 基本資料 ════════ -->
+<!-- ═══ 01. 基本資料 ═══ -->
 <section class="sec" id="basic">
   <div class="sec-inner">
     <div class="eyebrow">01 · OVERVIEW</div>
     <div class="sec-title">基本資料</div>
-    <div class="basic-wrap rv">
-      <div class="basic-col">
-        <div class="col-head"><div class="rdot qs"></div><div><div class="col-name">旗山</div><div class="col-sub">高雄市 · 旗山區</div></div></div>
+    <div class="dual rv">
+      <div class="region-col qs-col">
+        <div class="region-head"><div class="rdot qs"></div><div><div class="rname">旗山</div><div class="rsub">高雄市 · 旗山區</div></div></div>
         <div class="dr"><span class="dk">行政區類型</span><span class="dv qs">區（直轄市轄）</span></div>
         <div class="dr"><span class="dk">面積</span><span class="dv qs">64.07 km²</span></div>
         <div class="dr"><span class="dk">人口</span><span class="dv qs">約 3.7 萬人</span></div>
@@ -326,8 +382,8 @@
         <div class="dr"><span class="dk">主要農產</span><span class="dv qs">香蕉、荔枝、鳳梨</span></div>
         <div class="dr"><span class="dk">代表地標</span><span class="dv qs">旗山老街、天后宮</span></div>
       </div>
-      <div class="basic-col">
-        <div class="col-head"><div class="rdot dn"></div><div><div class="col-name">斗南</div><div class="col-sub">雲林縣 · 斗南鎮</div></div></div>
+      <div class="region-col dn-col">
+        <div class="region-head"><div class="rdot dn"></div><div><div class="rname">斗南</div><div class="rsub">雲林縣 · 斗南鎮</div></div></div>
         <div class="dr"><span class="dk">行政區類型</span><span class="dv dn">鎮（縣轄）</span></div>
         <div class="dr"><span class="dk">面積</span><span class="dv dn">67.45 km²</span></div>
         <div class="dr"><span class="dk">人口</span><span class="dv dn">約 4.2 萬人</span></div>
@@ -342,51 +398,63 @@
   </div>
 </section>
 
-<!-- ════════ 2. 歷史 — horizontal scroll, no outer border ════════ -->
+<!-- ═══ 02. 歷史 — horizontal dot timeline ═══ -->
 <section class="sec alt" id="history">
   <div class="sec-inner">
     <div class="eyebrow">02 · HISTORY</div>
     <div class="sec-title">歷史脈絡</div>
-    <div class="hist-scroll-hint">橫向捲動以對比兩地時間軸</div>
-    <div class="hist-outer rv">
-      <!-- 旗山 -->
-      <div class="hist-row qs-row">
-        <div class="hist-row-label qs-label"><div class="rl-dot"></div><div class="rl-name">旗山</div></div>
-        <div class="hist-cards-scroll" id="hsQs">
-          <div class="hist-card" data-d="0"><div class="hc-yr">1895</div><div class="hc-ev">日治初期，旗山因山谷氣候適宜，被選定為香蕉重點種植區，開啟長達半世紀的香蕉王國時代。</div></div>
-          <div class="hist-card" data-d="55"><div class="hc-yr">1906</div><div class="hc-ev">融合巴洛克洋樓與閩南語彙的老街商店陸續落成，奠定今日旗山歷史街區的核心格局。</div></div>
-          <div class="hist-card" data-d="110"><div class="hc-yr">1921</div><div class="hc-ev">旗山青果生產合作社成立，統籌品管與外銷，使旗山香蕉成為台灣最具代表性的外銷農產品。</div></div>
-          <div class="hist-card" data-d="165"><div class="hc-yr">1960 年代</div><div class="hc-ev">香蕉年出口量突破百萬箱，外銷日本換取重要外匯，「香蕉王國」之名享譽國際。</div></div>
-          <div class="hist-card" data-d="220"><div class="hc-yr">1970 年代</div><div class="hc-ev">颱風重創香蕉園，加以菲律賓低價競爭，外銷量急劇萎縮，農地轉作荔枝、鳳梨等果樹。</div></div>
-          <div class="hist-card" data-d="275"><div class="hc-yr">2000 年代</div><div class="hc-ev">老街建築登錄歷史建築，旗山以「慢城」概念重塑形象，結合農業體驗發展觀光。</div></div>
-          <div class="hist-card" data-d="330"><div class="hc-yr">2010 至今</div><div class="hc-ev">芭蕉冰、香蕉蛋糕等伴手禮爆紅，觀光農業帶動地方轉型，吸引青年返鄉創業。</div></div>
+    <div class="hist-scroll-hint">橫向捲動以瀏覽時間軸</div>
+
+    <!-- 旗山 -->
+    <div class="hist-region qs-region rv">
+      <div class="hist-region-header">
+        <div class="rdot qs"></div>
+        <div class="hist-region-name" style="color:var(--qs-dim)">旗山</div>
+        <div class="hist-region-label">QISHAN</div>
+      </div>
+      <div class="hist-scroll-outer">
+        <div class="hist-track">
+          <div class="hist-item" data-d="0"><div class="hist-item-year">1895</div><div class="hist-item-dot"></div><div class="hist-item-content"><div class="hist-item-title">日治初期</div><div class="hist-item-desc">旗山因山谷氣候適宜，被選定為香蕉重點種植區，開啟長達半世紀的香蕉王國時代。</div></div></div>
+          <div class="hist-item" data-d="55"><div class="hist-item-year">1906</div><div class="hist-item-dot"></div><div class="hist-item-content"><div class="hist-item-title">老街成形</div><div class="hist-item-desc">融合巴洛克洋樓與閩南建築語彙的老街商店陸續落成，奠定今日歷史街區核心格局。</div></div></div>
+          <div class="hist-item" data-d="110"><div class="hist-item-year">1921</div><div class="hist-item-dot"></div><div class="hist-item-content"><div class="hist-item-title">青果合作社</div><div class="hist-item-desc">旗山青果生產合作社成立，統籌品管與外銷，使旗山香蕉成為台灣代表性外銷農產品。</div></div></div>
+          <div class="hist-item" data-d="165"><div class="hist-item-year">1960s</div><div class="hist-item-dot"></div><div class="hist-item-content"><div class="hist-item-title">外銷全盛</div><div class="hist-item-desc">香蕉年出口量突破百萬箱，外銷日本換取重要外匯，「香蕉王國」之名享譽國際。</div></div></div>
+          <div class="hist-item" data-d="220"><div class="hist-item-year">1970s</div><div class="hist-item-dot"></div><div class="hist-item-content"><div class="hist-item-title">產業轉型</div><div class="hist-item-desc">颱風重創香蕉園，加以菲律賓低價競爭，外銷量急劇萎縮，農地轉作荔枝、鳳梨。</div></div></div>
+          <div class="hist-item" data-d="275"><div class="hist-item-year">2000s</div><div class="hist-item-dot"></div><div class="hist-item-content"><div class="hist-item-title">文化保存</div><div class="hist-item-desc">老街建築登錄歷史建築，旗山以「慢城」概念重塑形象，結合農業體驗發展觀光。</div></div></div>
+          <div class="hist-item" data-d="330"><div class="hist-item-year">2010+</div><div class="hist-item-dot"></div><div class="hist-item-content"><div class="hist-item-title">觀光農業</div><div class="hist-item-desc">芭蕉冰、香蕉蛋糕等伴手禮爆紅，帶動地方轉型，吸引青年返鄉創業。</div></div></div>
         </div>
       </div>
-      <!-- 斗南 -->
-      <div class="hist-row dn-row">
-        <div class="hist-row-label dn-label"><div class="rl-dot"></div><div class="rl-name">斗南</div></div>
-        <div class="hist-cards-scroll" id="hsDn">
-          <div class="hist-card" data-d="0"><div class="hc-yr">清朝末期</div><div class="hc-ev">漢人墾民沿虎尾溪開墾，斗南（時稱「他里霧」）逐漸形成以稻作與製糖為主的農業聚落。</div></div>
-          <div class="hist-card" data-d="55"><div class="hc-yr">1905</div><div class="hc-ev">縱貫鐵路斗南站啟用，成為雲林中部重要節點，農產品得以便利輸送各地市場。</div></div>
-          <div class="hist-card" data-d="110"><div class="hc-yr">1930</div><div class="hc-ev">嘉南大圳完工，斗南平原水資源問題根本解決，農業生產力大幅提升，奠定穀倉地位。</div></div>
-          <div class="hist-card" data-d="165"><div class="hc-yr">1950 年代</div><div class="hc-ev">耕者有其田落實，大批農民取得自耕地，稻米年產量持續成長，農村生活逐步改善。</div></div>
-          <div class="hist-card" data-d="220"><div class="hc-yr">1980 年代</div><div class="hc-ev">政府推動多元化，斗南引入蒜頭、洋蔥、花椰菜等蔬菜，從單一稻作轉型多元農業。</div></div>
-          <div class="hist-card" data-d="275"><div class="hc-yr">2000 年代</div><div class="hc-ev">農業機械全面普及，走向精緻化與規模化並行，同時面對農村人口外流與老化挑戰。</div></div>
-          <div class="hist-card" data-d="330"><div class="hc-yr">2010 至今</div><div class="hc-ev">農村再生計畫推動，斗南建立產地品牌，結合食農教育吸引都市消費者認識在地農業。</div></div>
+    </div>
+
+    <!-- 斗南 -->
+    <div class="hist-region dn-region rv" style="margin-top:2.5rem">
+      <div class="hist-region-header">
+        <div class="rdot dn"></div>
+        <div class="hist-region-name" style="color:var(--dn-dim)">斗南</div>
+        <div class="hist-region-label">DOUNAN</div>
+      </div>
+      <div class="hist-scroll-outer">
+        <div class="hist-track">
+          <div class="hist-item" data-d="0"><div class="hist-item-year">清末</div><div class="hist-item-dot"></div><div class="hist-item-content"><div class="hist-item-title">漢人拓墾</div><div class="hist-item-desc">漢人墾民沿虎尾溪開墾，斗南（時稱「他里霧」）形成以稻作與製糖為主的農業聚落。</div></div></div>
+          <div class="hist-item" data-d="55"><div class="hist-item-year">1905</div><div class="hist-item-dot"></div><div class="hist-item-content"><div class="hist-item-title">鐵路設站</div><div class="hist-item-desc">縱貫鐵路斗南站啟用，成為雲林中部重要節點，農產品得以便利輸送各地市場。</div></div></div>
+          <div class="hist-item" data-d="110"><div class="hist-item-year">1930</div><div class="hist-item-dot"></div><div class="hist-item-content"><div class="hist-item-title">嘉南大圳</div><div class="hist-item-desc">嘉南大圳完工，平原水資源問題根本解決，農業生產力大幅提升，奠定穀倉地位。</div></div></div>
+          <div class="hist-item" data-d="165"><div class="hist-item-year">1950s</div><div class="hist-item-dot"></div><div class="hist-item-content"><div class="hist-item-title">土地改革</div><div class="hist-item-desc">耕者有其田落實，大批農民取得自耕地，稻米年產量持續成長，農村生活改善。</div></div></div>
+          <div class="hist-item" data-d="220"><div class="hist-item-year">1980s</div><div class="hist-item-dot"></div><div class="hist-item-content"><div class="hist-item-title">作物多元化</div><div class="hist-item-desc">政府推動多元化，引入蒜頭、洋蔥、花椰菜等蔬菜，從單一稻作轉型多元農業。</div></div></div>
+          <div class="hist-item" data-d="275"><div class="hist-item-year">2000s</div><div class="hist-item-dot"></div><div class="hist-item-content"><div class="hist-item-title">農業機械化</div><div class="hist-item-desc">農業機械全面普及，走向精緻化與規模化並行，同時面對農村人口外流與老化挑戰。</div></div></div>
+          <div class="hist-item" data-d="330"><div class="hist-item-year">2010+</div><div class="hist-item-dot"></div><div class="hist-item-content"><div class="hist-item-title">農村再生</div><div class="hist-item-desc">農村再生計畫推動，斗南建立產地品牌，結合食農教育吸引都市消費者認識在地農業。</div></div></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ════════ 3. 人口 ════════ -->
+<!-- ═══ 03. 人口 ═══ -->
 <section class="sec" id="population">
   <div class="sec-inner">
     <div class="eyebrow">03 · POPULATION</div>
     <div class="sec-title">人口結構</div>
     <div class="chart-grid rv">
       <div class="chart-panel"><div class="chart-label">人口趨勢（千人）</div><canvas id="trendChart" height="200"></canvas><div class="chart-note">※ 內政部戶政司</div></div>
-      <div class="chart-panel"><div class="chart-label">年齡結構（%）</div><canvas id="ageChart" height="200"></canvas><div class="chart-note">※ 0–14 歲 ／ 15–64 歲 ／ 65 歲以上</div></div>
+      <div class="chart-panel"><div class="chart-label">年齡結構（%）</div><canvas id="ageChart" height="200"></canvas><div class="chart-note">※ 0–14 ／ 15–64 ／ 65歲以上</div></div>
     </div>
     <div class="chart-grid rv" style="margin-top:1px">
       <div class="chart-panel"><div class="chart-label">人口密度（人 / km²）</div><canvas id="densChart" height="110"></canvas></div>
@@ -395,78 +463,88 @@
   </div>
 </section>
 
-<!-- ════════ 4. 交通 ════════ -->
+<!-- ═══ 04. 交通 — carousel + map, table below ═══ -->
 <section class="sec alt" id="transport">
   <div class="sec-inner">
     <div class="eyebrow">04 · TRANSPORT</div>
     <div class="sec-title">交通</div>
 
-    <!-- Comparison table -->
-    <table class="transport-table rv">
-      <thead>
-        <tr>
-          <th class="type-col">類型</th>
-          <th><span class="t-dot t-qs"></span>旗山</th>
-          <th><span class="t-dot t-dn"></span>斗南</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td class="type-col">高速公路</td><td class="qs-cell">台88快速道路（銜接國道10號）</td><td class="dn-cell">國道1號 — 斗南交流道</td></tr>
-        <tr><td class="type-col">省道・縣道</td><td class="qs-cell">縣道184（旗山—美濃）、183號</td><td class="dn-cell">台1線縱貫公路（穿越鎮區）</td></tr>
-        <tr><td class="type-col">鐵路</td><td class="none-cell">無鐵路服務</td><td class="dn-cell">縱貫線 — 斗南火車站</td></tr>
-        <tr><td class="type-col">公路客運</td><td class="qs-cell">旗山客運總站，南北向班次</td><td class="dn-cell">台灣好行、縣市公車銜接車站</td></tr>
-        <tr><td class="type-col">對外距離</td><td class="qs-cell">至高雄市區約 35 分鐘車程</td><td class="dn-cell">至嘉義市約 30 分鐘｜台中約 50 分鐘</td></tr>
-      </tbody>
-    </table>
-
-    <!-- Maps -->
-    <div class="transport-maps rv">
-      <div class="tmap-wrap"><div class="tmap-label"><span class="t-dot t-qs"></span>旗山 — 交通地圖</div><div id="mapQs" class="tmap"></div></div>
-      <div class="tmap-wrap"><div class="tmap-label"><span class="t-dot t-dn"></span>斗南 — 交通地圖</div><div id="mapDn" class="tmap"></div></div>
+    <!-- 旗山 -->
+    <div class="transport-block rv">
+      <div class="transport-header">
+        <div class="rdot qs"></div>
+        <div class="transport-header-name">旗山</div>
+        <div class="transport-header-sum">公路為主 · 無鐵路</div>
+      </div>
+      <div class="transport-main">
+        <!-- carousel -->
+        <div class="transport-car-col">
+          <div id="cqt" class="carousel slide h-100" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              <div class="carousel-item active"><img src="https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=700&q=75" alt="台88快速道路"/><div class="carousel-caption"><p>台88快速道路 — 聯絡高雄市區主要幹道</p></div></div>
+              <div class="carousel-item"><img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=700&q=75" alt="旗山客運站"/><div class="carousel-caption"><p>旗山客運總站 — 公路客運南北向服務</p></div></div>
+              <div class="carousel-item"><img src="https://images.unsplash.com/photo-1498036882173-b41c28a8ba34?w=700&q=75" alt="縣道"/><div class="carousel-caption"><p>縣道184號 — 連接旗山與美濃山區</p></div></div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#cqt" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+            <button class="carousel-control-next" type="button" data-bs-target="#cqt" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+          </div>
+        </div>
+        <!-- map -->
+        <div class="transport-map-col"><div id="mapQs" class="tmap"></div></div>
+      </div>
+      <div class="transport-info">
+        <table class="t-table">
+          <tr><td class="t-key">高速公路</td><td class="t-val-qs">台88快速道路（銜接國道10號）</td></tr>
+          <tr><td class="t-key">省道・縣道</td><td class="t-val-qs">縣道184（旗山—美濃）、183號</td></tr>
+          <tr><td class="t-key">鐵路</td><td class="t-val-qs" style="opacity:.45;font-style:italic">無鐵路服務</td></tr>
+          <tr><td class="t-key">公路客運</td><td class="t-val-qs">旗山客運總站，南北向班次</td></tr>
+          <tr><td class="t-key">對外距離</td><td class="t-val-qs">至高雄市區約 35 分鐘車程</td></tr>
+        </table>
+      </div>
     </div>
 
-    <!-- Image carousels -->
-    <div class="transport-carousels rv">
-      <div class="tc-wrap">
-        <div id="cqt" class="carousel slide" data-bs-ride="carousel">
-          <div class="carousel-indicators">
-            <button type="button" data-bs-target="#cqt" data-bs-slide-to="0" class="active"></button>
-            <button type="button" data-bs-target="#cqt" data-bs-slide-to="1"></button>
-          </div>
-          <div class="carousel-inner" style="aspect-ratio:16/9">
-            <div class="carousel-item active" style="height:100%"><img src="https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=800&q=75" alt="旗山公路" style="width:100%;height:100%;object-fit:cover;filter:saturate(.65) brightness(.88)"/><div class="carousel-caption"><p>台88快速道路連接旗山與高雄市區</p></div></div>
-            <div class="carousel-item" style="height:100%"><img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&q=75" alt="旗山客運" style="width:100%;height:100%;object-fit:cover;filter:saturate(.65) brightness(.88)"/><div class="carousel-caption"><p>旗山客運總站提供南北向公路服務</p></div></div>
-          </div>
-          <button class="carousel-control-prev" type="button" data-bs-target="#cqt" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
-          <button class="carousel-control-next" type="button" data-bs-target="#cqt" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
-        </div>
+    <!-- 斗南 -->
+    <div class="transport-block rv">
+      <div class="transport-header">
+        <div class="rdot dn"></div>
+        <div class="transport-header-name">斗南</div>
+        <div class="transport-header-sum">鐵公路雙線 · 縱貫要道</div>
       </div>
-      <div class="tc-wrap">
-        <div id="cdt" class="carousel slide" data-bs-ride="carousel">
-          <div class="carousel-indicators">
-            <button type="button" data-bs-target="#cdt" data-bs-slide-to="0" class="active"></button>
-            <button type="button" data-bs-target="#cdt" data-bs-slide-to="1"></button>
+      <div class="transport-main">
+        <div class="transport-car-col">
+          <div id="cdt" class="carousel slide h-100" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              <div class="carousel-item active"><img src="https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=700&q=75" alt="斗南火車站"/><div class="carousel-caption"><p>縱貫鐵路斗南站 — 設站於1905年</p></div></div>
+              <div class="carousel-item"><img src="https://images.unsplash.com/photo-1619468129361-605ebea04b44?w=700&q=75" alt="國道1號"/><div class="carousel-caption"><p>國道1號斗南交流道 — 西部走廊快速聯絡</p></div></div>
+              <div class="carousel-item"><img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=700&q=75" alt="台1線"/><div class="carousel-caption"><p>台1線縱貫公路 — 穿越鎮區的省道幹線</p></div></div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#cdt" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+            <button class="carousel-control-next" type="button" data-bs-target="#cdt" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
           </div>
-          <div class="carousel-inner" style="aspect-ratio:16/9">
-            <div class="carousel-item active" style="height:100%"><img src="https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=800&q=75" alt="斗南車站" style="width:100%;height:100%;object-fit:cover;filter:saturate(.65) brightness(.88)"/><div class="carousel-caption"><p>縱貫鐵路斗南站，南北交通要道</p></div></div>
-            <div class="carousel-item" style="height:100%"><img src="https://images.unsplash.com/photo-1619468129361-605ebea04b44?w=800&q=75" alt="斗南高速公路" style="width:100%;height:100%;object-fit:cover;filter:saturate(.65) brightness(.88)"/><div class="carousel-caption"><p>國道1號斗南交流道連結西部走廊</p></div></div>
-          </div>
-          <button class="carousel-control-prev" type="button" data-bs-target="#cdt" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
-          <button class="carousel-control-next" type="button" data-bs-target="#cdt" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
         </div>
+        <div class="transport-map-col"><div id="mapDn" class="tmap"></div></div>
+      </div>
+      <div class="transport-info">
+        <table class="t-table">
+          <tr><td class="t-key">鐵路</td><td class="t-val-dn">縱貫線 — 斗南火車站（每日多班）</td></tr>
+          <tr><td class="t-key">高速公路</td><td class="t-val-dn">國道1號 — 斗南交流道</td></tr>
+          <tr><td class="t-key">省道</td><td class="t-val-dn">台1線縱貫公路（穿越鎮區）</td></tr>
+          <tr><td class="t-key">公路客運</td><td class="t-val-dn">台灣好行、縣市公車銜接車站</td></tr>
+          <tr><td class="t-key">對外距離</td><td class="t-val-dn">至嘉義市約30分鐘 ／ 台中約50分鐘</td></tr>
+        </table>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ════════ 5. 教育 ════════ -->
+<!-- ═══ 05. 教育 ═══ -->
 <section class="sec" id="education">
   <div class="sec-inner">
     <div class="eyebrow">05 · EDUCATION</div>
     <div class="sec-title">教育</div>
-    <div class="edu-grid rv">
-      <div class="edu-col qs-col">
-        <div class="col-head"><div class="rdot qs"></div><div><div class="col-name">旗山</div><div class="col-sub">農業特色教育</div></div></div>
+    <div class="dual rv">
+      <div class="region-col qs-col">
+        <div class="region-head"><div class="rdot qs"></div><div><div class="rname">旗山</div><div class="rsub">農業特色教育</div></div></div>
         <div class="edu-stats">
           <div class="edu-stat"><div class="edu-num">4</div><div class="edu-stat-label">國小</div></div>
           <div class="edu-stat"><div class="edu-num">1</div><div class="edu-stat-label">國中</div></div>
@@ -482,8 +560,8 @@
           <li><span class="edu-school-name">旗山農工</span><span class="edu-school-level">高職（農業特色）</span></li>
         </ul>
       </div>
-      <div class="edu-col dn-col">
-        <div class="col-head"><div class="rdot dn"></div><div><div class="col-name">斗南</div><div class="col-sub">食農教育深根</div></div></div>
+      <div class="region-col dn-col">
+        <div class="region-head"><div class="rdot dn"></div><div><div class="rname">斗南</div><div class="rsub">食農教育深根</div></div></div>
         <div class="edu-stats">
           <div class="edu-stat"><div class="edu-num">5</div><div class="edu-stat-label">國小</div></div>
           <div class="edu-stat"><div class="edu-num">1</div><div class="edu-stat-label">國中</div></div>
@@ -500,34 +578,24 @@
         </ul>
       </div>
     </div>
-
-    <!-- Education image carousels -->
     <div class="edu-carousel-wrap rv">
       <div class="edu-carousel-panel">
-        <div class="edu-carousel-label"><span class="t-dot t-qs"></span>旗山 — 校園環境</div>
+        <div class="edu-carousel-label">旗山 — 校園環境</div>
         <div id="cqe" class="carousel slide" data-bs-ride="carousel">
-          <div class="carousel-indicators">
-            <button type="button" data-bs-target="#cqe" data-bs-slide-to="0" class="active"></button>
-            <button type="button" data-bs-target="#cqe" data-bs-slide-to="1"></button>
-          </div>
           <div class="carousel-inner" style="aspect-ratio:16/9">
-            <div class="carousel-item active" style="height:100%"><img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800&q=75" alt="旗山校園" style="width:100%;height:100%;object-fit:cover;filter:saturate(.65) brightness(.88)"/><div class="carousel-caption"><p>旗山農工結合在地農業產業特色辦學</p></div></div>
-            <div class="carousel-item" style="height:100%"><img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=75" alt="旗美高中" style="width:100%;height:100%;object-fit:cover;filter:saturate(.65) brightness(.88)"/><div class="carousel-caption"><p>旗美高中提供山區學生就近升學選擇</p></div></div>
+            <div class="carousel-item active" style="height:100%"><img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=700&q=75" alt="" style="width:100%;height:100%;object-fit:cover;filter:saturate(.62) brightness(.78)"/><div class="carousel-caption"><p>旗山農工結合在地農業特色辦學</p></div></div>
+            <div class="carousel-item" style="height:100%"><img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=700&q=75" alt="" style="width:100%;height:100%;object-fit:cover;filter:saturate(.62) brightness(.78)"/><div class="carousel-caption"><p>旗美高中提供山區學生就近升學選擇</p></div></div>
           </div>
           <button class="carousel-control-prev" type="button" data-bs-target="#cqe" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
           <button class="carousel-control-next" type="button" data-bs-target="#cqe" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
         </div>
       </div>
       <div class="edu-carousel-panel">
-        <div class="edu-carousel-label"><span class="t-dot t-dn"></span>斗南 — 食農教育</div>
+        <div class="edu-carousel-label">斗南 — 食農教育</div>
         <div id="cde" class="carousel slide" data-bs-ride="carousel">
-          <div class="carousel-indicators">
-            <button type="button" data-bs-target="#cde" data-bs-slide-to="0" class="active"></button>
-            <button type="button" data-bs-target="#cde" data-bs-slide-to="1"></button>
-          </div>
           <div class="carousel-inner" style="aspect-ratio:16/9">
-            <div class="carousel-item active" style="height:100%"><img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=75" alt="斗南校園" style="width:100%;height:100%;object-fit:cover;filter:saturate(.65) brightness(.88)"/><div class="carousel-caption"><p>各國小積極推動食農體驗課程</p></div></div>
-            <div class="carousel-item" style="height:100%"><img src="https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?w=800&q=75" alt="食農教育" style="width:100%;height:100%;object-fit:cover;filter:saturate(.65) brightness(.88)"/><div class="carousel-caption"><p>讓學生從小建立與土地的深刻連結</p></div></div>
+            <div class="carousel-item active" style="height:100%"><img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=700&q=75" alt="" style="width:100%;height:100%;object-fit:cover;filter:saturate(.62) brightness(.78)"/><div class="carousel-caption"><p>各國小積極推動食農體驗課程</p></div></div>
+            <div class="carousel-item" style="height:100%"><img src="https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?w=700&q=75" alt="" style="width:100%;height:100%;object-fit:cover;filter:saturate(.62) brightness(.78)"/><div class="carousel-caption"><p>讓學生從小建立與土地的深刻連結</p></div></div>
           </div>
           <button class="carousel-control-prev" type="button" data-bs-target="#cde" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
           <button class="carousel-control-next" type="button" data-bs-target="#cde" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
@@ -537,49 +605,43 @@
   </div>
 </section>
 
-<!-- ════════ 6. 生活機能 ════════ -->
+<!-- ═══ 06. 生活機能 ═══ -->
 <section class="sec alt" id="living">
   <div class="sec-inner">
     <div class="eyebrow">06 · AMENITIES</div>
     <div class="sec-title">生活機能</div>
-    <div class="living-grid rv">
-      <div class="living-col qs-col">
-        <div class="col-head"><div class="rdot qs"></div><div><div class="col-name">旗山</div><div class="col-sub">老街為核心的生活圈</div></div></div>
-        <div class="living-category">
-          <div class="living-cat-label">市場 · 購物</div>
+    <div class="dual rv">
+      <div class="region-col qs-col">
+        <div class="region-head"><div class="rdot qs"></div><div><div class="rname">旗山</div><div class="rsub">老街為核心的生活圈</div></div></div>
+        <div class="living-category"><div class="living-cat-label">市場 · 購物</div>
           <div class="living-item"><div class="living-dot"></div>旗山傳統市場（日常採買）</div>
           <div class="living-item"><div class="living-dot"></div>旗山老街商圈（餐飲、伴手禮）</div>
           <div class="living-item"><div class="living-dot"></div>農會超市</div>
         </div>
-        <div class="living-category">
-          <div class="living-cat-label">醫療 · 衛生</div>
+        <div class="living-category"><div class="living-cat-label">醫療 · 衛生</div>
           <div class="living-item"><div class="living-dot"></div>旗山醫院（高雄長庚體系）</div>
           <div class="living-item"><div class="living-dot"></div>旗山區衛生所</div>
           <div class="living-item"><div class="living-dot"></div>多間基層診所</div>
         </div>
-        <div class="living-category">
-          <div class="living-cat-label">公共服務</div>
+        <div class="living-category"><div class="living-cat-label">公共服務</div>
           <div class="living-item"><div class="living-dot"></div>旗山區公所</div>
           <div class="living-item"><div class="living-dot"></div>郵局、農會金融</div>
           <div class="living-item"><div class="living-dot"></div>旗山圖書館</div>
         </div>
       </div>
-      <div class="living-col dn-col">
-        <div class="col-head"><div class="rdot dn"></div><div><div class="col-name">斗南</div><div class="col-sub">車站帶動商業發展</div></div></div>
-        <div class="living-category">
-          <div class="living-cat-label">市場 · 購物</div>
+      <div class="region-col dn-col">
+        <div class="region-head"><div class="rdot dn"></div><div><div class="rname">斗南</div><div class="rsub">車站帶動商業發展</div></div></div>
+        <div class="living-category"><div class="living-cat-label">市場 · 購物</div>
           <div class="living-item"><div class="living-dot"></div>東市場（第二市場，農產豐富）</div>
           <div class="living-item"><div class="living-dot"></div>第一傳統市場</div>
           <div class="living-item"><div class="living-dot"></div>車站周邊商圈（餐飲生活雜貨）</div>
         </div>
-        <div class="living-category">
-          <div class="living-cat-label">醫療 · 衛生</div>
+        <div class="living-category"><div class="living-cat-label">醫療 · 衛生</div>
           <div class="living-item"><div class="living-dot"></div>斗南鎮衛生所</div>
           <div class="living-item"><div class="living-dot"></div>多間基層診所</div>
           <div class="living-item"><div class="living-dot"></div>重症依賴斗六成大醫院（20分鐘）</div>
         </div>
-        <div class="living-category">
-          <div class="living-cat-label">公共服務</div>
+        <div class="living-category"><div class="living-cat-label">公共服務</div>
           <div class="living-item"><div class="living-dot"></div>斗南鎮公所</div>
           <div class="living-item"><div class="living-dot"></div>郵局、農會信用部</div>
           <div class="living-item"><div class="living-dot"></div>斗南圖書館</div>
@@ -589,94 +651,118 @@
   </div>
 </section>
 
-<!-- ════════ 7. 環境 — carousel blocks ════════ -->
-<section class="sec" id="environment">
+<!-- ═══ 07. 核心場域 — horizontal scroll photos ═══ -->
+<section class="sec" id="landmark">
   <div class="sec-inner">
-    <div class="eyebrow">07 · ENVIRONMENT</div>
-    <div class="sec-title">自然環境</div>
+    <div class="eyebrow">07 · LANDMARK</div>
+    <div class="sec-title">地方核心場域</div>
 
-    <!-- 旗山 -->
+    <!-- 旗山老街 -->
+    <div class="landmark-region rv">
+      <div class="landmark-intro">
+        <div class="landmark-intro-label">
+          <div class="landmark-intro-tag"><div class="rdot qs" style="display:inline-block;margin-right:.4rem"></div>旗山 · 高雄市</div>
+          <div class="landmark-intro-name">旗山老街</div>
+        </div>
+        <div class="landmark-intro-text">旗山老街位於中山路一帶，建於日治時期，以融合巴洛克立面裝飾與閩南建築語彙的街屋建築聞名。街道全長約三百公尺，兩側完整的拱廊式騎樓是南部保存最佳的日治商業街區之一。近年青年返鄉，為百年街區注入新活力。</div>
+      </div>
+      <div class="landmark-hscroll-wrap">
+        <div class="landmark-hscroll">
+          <div class="lm-hphoto"><div class="lm-hphoto-img"><img src="https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=600&q=75" alt=""/></div><div class="lm-hphoto-cap"><div class="lm-hphoto-cap-title">老街全景</div><div class="lm-hphoto-cap-desc">中山路一帶保存完整的日治時期巴洛克式騎樓街屋。</div></div></div>
+          <div class="lm-hphoto"><div class="lm-hphoto-img"><img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=600&q=75" alt=""/></div><div class="lm-hphoto-cap"><div class="lm-hphoto-cap-title">建築細節</div><div class="lm-hphoto-cap-desc">融合東西方美學的立面裝飾，展現台灣日治時代獨特建築語彙。</div></div></div>
+          <div class="lm-hphoto"><div class="lm-hphoto-img"><img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=75" alt=""/></div><div class="lm-hphoto-cap"><div class="lm-hphoto-cap-title">在地生活</div><div class="lm-hphoto-cap-desc">芭蕉冰、香蕉蛋糕沿街飄香，老街是旗山日常生活的舞台。</div></div></div>
+          <div class="lm-hphoto"><div class="lm-hphoto-img"><img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600&q=75" alt=""/></div><div class="lm-hphoto-cap"><div class="lm-hphoto-cap-title">香蕉冰品</div><div class="lm-hphoto-cap-desc">以在地香蕉製成的芭蕉冰是旗山最具代表性的觀光美食。</div></div></div>
+          <div class="lm-hphoto"><div class="lm-hphoto-img"><img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?w=600&q=75" alt=""/></div><div class="lm-hphoto-cap"><div class="lm-hphoto-cap-title">傳統小吃</div><div class="lm-hphoto-cap-desc">老街周邊聚集各式傳統小吃，旗山肉圓、米糕筒深受在地人喜愛。</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:3rem"></div>
+
+    <!-- 斗南火車站 -->
+    <div class="landmark-region rv">
+      <div class="landmark-intro">
+        <div class="landmark-intro-label">
+          <div class="landmark-intro-tag"><div class="rdot dn" style="display:inline-block;margin-right:.4rem"></div>斗南 · 雲林縣</div>
+          <div class="landmark-intro-name">斗南火車站</div>
+        </div>
+        <div class="landmark-intro-text">斗南火車站設立於1905年，縱貫鐵路全線通車之際，是雲林中部最重要的交通門戶。車站前廣場周邊的商家自日治時期便已蓬勃，至今仍承載著整個鎮的對外連結與日常節奏。</div>
+      </div>
+      <div class="landmark-hscroll-wrap">
+        <div class="landmark-hscroll">
+          <div class="lm-hphoto"><div class="lm-hphoto-img"><img src="https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=600&q=75" alt=""/></div><div class="lm-hphoto-cap"><div class="lm-hphoto-cap-title">車站月台</div><div class="lm-hphoto-cap-desc">每日往返嘉義、台中的列車於此停靠，是雲林縣使用率最高的鐵路車站之一。</div></div></div>
+          <div class="lm-hphoto"><div class="lm-hphoto-img"><img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&q=75" alt=""/></div><div class="lm-hphoto-cap"><div class="lm-hphoto-cap-title">車站建築</div><div class="lm-hphoto-cap-desc">現代化站體承載著百年交通歷史，車站廣場前是斗南生活的脈動核心。</div></div></div>
+          <div class="lm-hphoto"><div class="lm-hphoto-img"><img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=600&q=75" alt=""/></div><div class="lm-hphoto-cap"><div class="lm-hphoto-cap-title">縱貫平原</div><div class="lm-hphoto-cap-desc">台1線縱貫公路穿越鎮區，筆直道路延伸入廣袤農田，呈現嘉南平原獨特空間感。</div></div></div>
+          <div class="lm-hphoto"><div class="lm-hphoto-img"><img src="https://images.unsplash.com/photo-1534361960057-19f4434e0d4b?w=600&q=75" alt=""/></div><div class="lm-hphoto-cap"><div class="lm-hphoto-cap-title">在地市集</div><div class="lm-hphoto-cap-desc">斗南東市場聚集大批在地農產攤位，是居民日常採買的生活核心。</div></div></div>
+          <div class="lm-hphoto"><div class="lm-hphoto-img"><img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=75" alt=""/></div><div class="lm-hphoto-cap"><div class="lm-hphoto-cap-title">農田地景</div><div class="lm-hphoto-cap-desc">車站周邊一望無際的嘉南平原農田，定義了斗南獨特的地方個性。</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 08. 環境 ═══ -->
+<section class="sec alt" id="environment">
+  <div class="sec-inner">
+    <div class="eyebrow">08 · ENVIRONMENT</div>
+    <div class="sec-title">自然環境</div>
     <div class="env-block rv">
       <div class="env-carousel">
         <div id="cqenv" class="carousel slide h-100" data-bs-ride="carousel">
-          <div class="carousel-indicators">
-            <button type="button" data-bs-target="#cqenv" data-bs-slide-to="0" class="active"></button>
-            <button type="button" data-bs-target="#cqenv" data-bs-slide-to="1"></button>
-            <button type="button" data-bs-target="#cqenv" data-bs-slide-to="2"></button>
-          </div>
           <div class="carousel-inner">
-            <div class="carousel-item active"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=75" alt="旗山山林"/><div class="carousel-caption"><p>旗尾山步道全長約2.5公里，生態豐富</p></div></div>
-            <div class="carousel-item"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=75" alt="旗山山景"/><div class="carousel-caption"><p>旗山溪河岸提供親水休閒空間</p></div></div>
-            <div class="carousel-item"><img src="https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=800&q=75" alt="旗山公園"/><div class="carousel-caption"><p>旗山生態公園，糖廠舊址改建的都市綠地</p></div></div>
+            <div class="carousel-item active"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=700&q=75" alt=""/><div class="carousel-caption"><p>旗尾山步道全長約2.5公里，生態豐富</p></div></div>
+            <div class="carousel-item"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=700&q=75" alt=""/><div class="carousel-caption"><p>旗山溪河岸提供親水休閒空間</p></div></div>
+            <div class="carousel-item"><img src="https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=700&q=75" alt=""/><div class="carousel-caption"><p>旗山生態公園，糖廠舊址改建的都市綠地</p></div></div>
           </div>
           <button class="carousel-control-prev" type="button" data-bs-target="#cqenv" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
           <button class="carousel-control-next" type="button" data-bs-target="#cqenv" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
         </div>
       </div>
       <div class="env-txt">
-        <div class="rtag"><div class="rdot qs"></div><span style="color:var(--qs-dim);letter-spacing:.3em;font-size:.67rem">旗山</span></div>
+        <div class="rtag"><div class="rdot qs"></div><span style="color:var(--qs-dim);letter-spacing:.3em;font-size:.66rem">旗山</span></div>
         <div class="env-sub">山水交織的生態景觀</div>
         <div class="env-desc">旗山地處山地與平原過渡帶，旗山溪蜿蜒流過市區，形成豐富的河岸生態廊道。旗尾山步道沿途視野開闊，可俯瞰市區全景。糖廠舊址改建的旗山生態公園，提供市民親近自然的都市綠地空間。</div>
         <div class="tags"><span class="tag">旗尾山步道</span><span class="tag">旗山溪河岸</span><span class="tag">旗山生態公園</span><span class="tag">高旗自然公園</span></div>
       </div>
     </div>
-
-    <div class="region-gap"></div>
-
-    <!-- 斗南 -->
-    <div class="env-block flip rv">
+    <div class="env-block flip rv" style="margin-top:2.5rem">
       <div class="env-carousel">
         <div id="cdenv" class="carousel slide h-100" data-bs-ride="carousel">
-          <div class="carousel-indicators">
-            <button type="button" data-bs-target="#cdenv" data-bs-slide-to="0" class="active"></button>
-            <button type="button" data-bs-target="#cdenv" data-bs-slide-to="1"></button>
-            <button type="button" data-bs-target="#cdenv" data-bs-slide-to="2"></button>
-          </div>
           <div class="carousel-inner">
-            <div class="carousel-item active"><img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=75" alt="斗南農田"/><div class="carousel-caption"><p>嘉南平原一望無際的農田地景</p></div></div>
-            <div class="carousel-item"><img src="https://images.unsplash.com/photo-1536882240095-0379873feb4e?w=800&q=75" alt="稻田"/><div class="carousel-caption"><p>插秧季節稻田景觀吸引攝影愛好者造訪</p></div></div>
-            <div class="carousel-item"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=75" alt="平原景觀"/><div class="carousel-caption"><p>休閒農場提供農業體驗與生態導覽</p></div></div>
+            <div class="carousel-item active"><img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=700&q=75" alt=""/><div class="carousel-caption"><p>嘉南平原一望無際的農田地景</p></div></div>
+            <div class="carousel-item"><img src="https://images.unsplash.com/photo-1536882240095-0379873feb4e?w=700&q=75" alt=""/><div class="carousel-caption"><p>插秧季節稻田景觀吸引攝影愛好者</p></div></div>
+            <div class="carousel-item"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=700&q=75" alt=""/><div class="carousel-caption"><p>休閒農場提供農業體驗與生態導覽</p></div></div>
           </div>
           <button class="carousel-control-prev" type="button" data-bs-target="#cdenv" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
           <button class="carousel-control-next" type="button" data-bs-target="#cdenv" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
         </div>
       </div>
       <div class="env-txt">
-        <div class="rtag"><div class="rdot dn"></div><span style="color:var(--dn-dim);letter-spacing:.3em;font-size:.67rem">斗南</span></div>
+        <div class="rtag"><div class="rdot dn"></div><span style="color:var(--dn-dim);letter-spacing:.3em;font-size:.66rem">斗南</span></div>
         <div class="env-sub">嘉南平原農田地景</div>
-        <div class="env-desc">斗南坐擁嘉南平原開闊農田景觀，春插秧、秋收割的農耕節律形成獨特地景韻律，是攝影愛好者的熱門取景地。近年休閒農場發展迅速，提供農業體驗、生態導覽等活動，成為都市居民假日親農的好去處。</div>
+        <div class="env-desc">斗南坐擁嘉南平原開闊農田景觀，春插秧、秋收割的農耕節律形成獨特地景韻律。近年休閒農場發展迅速，提供農業體驗、生態導覽等活動，成為都市居民假日親農的好去處。</div>
         <div class="tags"><span class="tag">嘉南平原農田</span><span class="tag">東興休閒農場</span><span class="tag">虎尾溪生態</span><span class="tag">農業體驗園區</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ════════ 8. 作者視角 ════════ -->
-<section class="sec alt" id="author">
+<!-- ═══ 09. 作者視角 ═══ -->
+<section class="sec" id="author">
   <div class="sec-inner">
-    <div class="eyebrow">08 · AUTHOR'S NOTE</div>
+    <div class="eyebrow">09 · AUTHOR'S NOTE</div>
     <div class="sec-title">關於家鄉，我們想說的</div>
-    <div class="author-grid rv">
-      <!-- 旗山 -->
-      <div class="author-col qs-col">
+    <div class="dual rv">
+      <div class="region-col qs-col author-col">
         <div class="author-quote-mark">"</div>
-        <div class="author-region-tag"><div class="rdot qs"></div><span style="color:var(--qs-dim);letter-spacing:.32em;font-size:.68rem">旗山</span></div>
-        <p class="author-text">
-          旗山是一座讓人想慢下來的城市。老街的巴洛克立面在南台灣的陽光下顯得格外迷人，香蕉樹葉的搖曳聲、市場裡的叫賣聲，共同構成了台灣農村最真實的日常圖景。<br><br>
-          香蕉產業的興衰是台灣經濟轉型的縮影，而那些選擇留守、用創意重新定義家鄉價值的年輕人，讓旗山的故事不只是懷舊，而是一個持續書寫中的未來。<br><br>
-          每次回到旗山，都覺得這裡的時間流速和外面世界不一樣——那種不一樣，或許正是它最珍貴的地方。
-        </p>
+        <div class="author-region-tag"><div class="rdot qs"></div><span style="color:var(--qs-dim);letter-spacing:.32em;font-size:.67rem">旗山</span></div>
+        <p class="author-text">旗山是一座讓人想慢下來的城市。老街的巴洛克立面在南台灣的陽光下顯得格外迷人，香蕉樹葉的搖曳聲、市場裡的叫賣聲，共同構成了台灣農村最真實的日常圖景。<br><br>香蕉產業的興衰是台灣經濟轉型的縮影，而那些選擇留守、用創意重新定義家鄉價值的年輕人，讓旗山的故事不只是懷舊，而是一個持續書寫中的未來。</p>
         <div class="author-sig">作者 · 旗山組</div>
       </div>
-      <!-- 斗南 -->
-      <div class="author-col dn-col">
+      <div class="region-col dn-col author-col">
         <div class="author-quote-mark">"</div>
-        <div class="author-region-tag"><div class="rdot dn"></div><span style="color:var(--dn-dim);letter-spacing:.32em;font-size:.68rem">斗南</span></div>
-        <p class="author-text">
-          斗南的美，藏在平靜之中。沒有旗山的觀光熱度，斗南以一種更低調的方式存在著——廣袤的稻田、清晨市場裡堆積如山的新鮮蒜頭、火車站前等待上學的孩子。<br><br>
-          這裡的農業不只是產業，更是一種生活方式，一種人與土地之間深刻而沉默的對話。每一粒米、每一顆蒜，背後都是幾代人的勞動與堅持。<br><br>
-          斗南不需要過多的裝飾，它的本質本身就已足夠動人。研究這片土地，讓我們重新思考「家鄉」的意義。
-        </p>
+        <div class="author-region-tag"><div class="rdot dn"></div><span style="color:var(--dn-dim);letter-spacing:.32em;font-size:.67rem">斗南</span></div>
+        <p class="author-text">斗南的美，藏在平靜之中。沒有旗山的觀光熱度，斗南以一種更低調的方式存在著——廣袤的稻田、清晨市場裡堆積如山的新鮮蒜頭、火車站前等待上學的孩子。<br><br>這裡的農業不只是產業，更是一種生活方式，一種人與土地之間深刻而沉默的對話。斗南不需要過多裝飾，它的本質本身就已足夠動人。</p>
         <div class="author-sig">作者 · 斗南組</div>
       </div>
     </div>
@@ -689,110 +775,59 @@
   <a href="sources.html">資料來源 →</a>
 </footer>
 
-<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 /* ── CHARTS ── */
-Chart.defaults.color='#6a6760';Chart.defaults.borderColor='#252320';
-Chart.defaults.font.family="'Playfair Display',serif";
-const QC='rgba(153,96,64,.8)',QA='rgba(153,96,64,.14)';
-const DC='rgba(77,107,56,.8)', DA='rgba(77,107,56,.14)';
-
+Chart.defaults.color='#6a6760';Chart.defaults.borderColor='#252320';Chart.defaults.font.family="'Playfair Display',serif";
+const QC='rgba(153,96,64,.8)',QA='rgba(153,96,64,.14)',DC='rgba(77,107,56,.8)',DA='rgba(77,107,56,.14)';
 new Chart(document.getElementById('trendChart'),{type:'line',data:{labels:['1990','1995','2000','2005','2010','2015','2020','2023'],datasets:[{label:'旗山',data:[48.2,46.5,44.8,43,41,39.5,37.8,37.1],borderColor:QC,backgroundColor:QA,borderWidth:1.5,pointRadius:3,fill:true,tension:.4},{label:'斗南',data:[52.1,51,49.5,47.8,46,44.5,43.2,42],borderColor:DC,backgroundColor:DA,borderWidth:1.5,pointRadius:3,fill:true,tension:.4}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'top',labels:{boxWidth:10,padding:12,font:{size:10}}}},scales:{y:{grid:{color:'#252320'},ticks:{font:{size:9}}},x:{grid:{display:false},ticks:{font:{size:9}}}}}});
 new Chart(document.getElementById('ageChart'),{type:'bar',data:{labels:['0–14 歲','15–64 歲','65 歲以上'],datasets:[{label:'旗山',data:[10,62,28],backgroundColor:QC,borderWidth:0},{label:'斗南',data:[11,64,25],backgroundColor:DC,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'top',labels:{boxWidth:10,padding:12,font:{size:10}}}},scales:{y:{grid:{color:'#252320'},ticks:{font:{size:9},callback:v=>v+'%'}},x:{grid:{display:false},ticks:{font:{size:9}}}}}});
 new Chart(document.getElementById('densChart'),{type:'bar',data:{labels:['旗山','斗南'],datasets:[{label:'人/km²',data:[577,623],backgroundColor:[QC,DC],borderWidth:0,barThickness:34}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}},scales:{x:{grid:{color:'#252320'},ticks:{font:{size:9}}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
 new Chart(document.getElementById('agingChart'),{type:'bar',data:{labels:['老化指數','扶養比(%)'],datasets:[{label:'旗山',data:[280,61.3],backgroundColor:QC,borderWidth:0},{label:'斗南',data:[227,56.3],backgroundColor:DC,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'top',labels:{boxWidth:10,padding:12,font:{size:10}}}},scales:{y:{grid:{color:'#252320'},ticks:{font:{size:9}}},x:{grid:{display:false},ticks:{font:{size:9}}}}}});
 
 /* ── LEAFLET MAPS ── */
-function mkMap(id, lat, lng, zoom, markers) {
-  const m = L.map(id, { zoomControl: false, scrollWheelZoom: false, attributionControl: false });
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(m);
-  m.setView([lat, lng], zoom);
-  markers.forEach(([mlat, mlng, label, color]) => {
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="24" viewBox="0 0 18 24"><path d="M9 0C4.03 0 0 4.03 0 9c0 6.25 9 15 9 15S18 15.25 18 9C18 4.03 13.97 0 9 0z" fill="${color}"/><circle cx="9" cy="9" r="3.5" fill="rgba(255,255,255,.85)"/></svg>`;
-    L.marker([mlat, mlng], {
-      icon: L.divIcon({ html: svg, iconSize: [18, 24], iconAnchor: [9, 24], popupAnchor: [0, -26], className: '' })
-    }).bindPopup(`<span style="font-size:.8rem">${label}</span>`).addTo(m);
+function mkMap(id,lat,lng,zoom,markers){
+  const m=L.map(id,{zoomControl:false,scrollWheelZoom:false,attributionControl:false});
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(m);
+  m.setView([lat,lng],zoom);
+  markers.forEach(([mlat,mlng,label,color])=>{
+    const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="18" height="24" viewBox="0 0 18 24"><path d="M9 0C4.03 0 0 4.03 0 9c0 6.25 9 15 9 15S18 15.25 18 9C18 4.03 13.97 0 9 0z" fill="${color}"/><circle cx="9" cy="9" r="3.5" fill="rgba(255,255,255,.85)"/></svg>`;
+    L.marker([mlat,mlng],{icon:L.divIcon({html:svg,iconSize:[18,24],iconAnchor:[9,24],popupAnchor:[0,-26],className:''})}).bindPopup(`<span style="font-size:.8rem">${label}</span>`).addTo(m);
   });
-  return m;
 }
+setTimeout(()=>{
+  mkMap('mapQs',22.889,120.478,13,[[22.8896,120.4776,'旗山客運總站','#996040'],[22.885,120.482,'台88快速道路出口','#996040'],[22.889,120.477,'旗山老街','#996040']]);
+  mkMap('mapDn',23.683,120.475,13,[[23.6835,120.4768,'斗南火車站','#4d6b38'],[23.687,120.471,'國道1號斗南交流道','#4d6b38'],[23.682,120.476,'斗南東市場','#4d6b38']]);
+},100);
 
-setTimeout(() => {
-  mkMap('mapQs', 22.889, 120.478, 13, [
-    [22.8896, 120.4776, '旗山客運總站', '#996040'],
-    [22.885,  120.482,  '台88快速道路出口', '#996040'],
-    [22.889,  120.477,  '旗山老街', '#996040'],
-  ]);
-  mkMap('mapDn', 23.683, 120.475, 13, [
-    [23.6835, 120.4768, '斗南火車站', '#4d6b38'],
-    [23.687,  120.471,  '國道1號斗南交流道', '#4d6b38'],
-    [23.682,  120.476,  '斗南東市場', '#4d6b38'],
-  ]);
-}, 100);
-
-/* ── HISTORY SYNC SCROLL ── */
-const hsQs = document.getElementById('hsQs');
-const hsDn = document.getElementById('hsDn');
-let syncing = false;
-function sync(src, dst) {
-  src.addEventListener('scroll', () => {
-    if (syncing) return; syncing = true;
-    dst.scrollLeft = src.scrollLeft;
-    requestAnimationFrame(() => { syncing = false; });
-  }, { passive: true });
-}
-sync(hsQs, hsDn); sync(hsDn, hsQs);
-
-/* ── HISTORY CARD REVEAL ── */
-const histObs = new IntersectionObserver(e => {
-  if (e[0].isIntersecting) {
-    document.querySelectorAll('.hist-card').forEach(c => setTimeout(() => c.classList.add('on'), +c.dataset.d || 0));
-    histObs.disconnect();
-  }
-}, { threshold: 0.08 });
-histObs.observe(document.querySelector('.hist-outer'));
+/* ── HISTORY REVEAL ── */
+const histObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.hist-item').forEach(c=>setTimeout(()=>c.classList.add('on'),+c.dataset.d||0));
+      histObs.unobserve(e.target);
+    }
+  });
+},{threshold:.08});
+document.querySelectorAll('.hist-region').forEach(r=>histObs.observe(r));
 
 /* ── GENERAL REVEAL ── */
-const rvObs = new IntersectionObserver(e => {
-  e.forEach(en => { if (en.isIntersecting) { en.target.classList.add('on'); rvObs.unobserve(en.target); } });
-}, { threshold: 0.06 });
-document.querySelectorAll('.rv').forEach(el => rvObs.observe(el));
+const rvObs=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){en.target.classList.add('on');rvObs.unobserve(en.target);}});},{threshold:.06});
+document.querySelectorAll('.rv').forEach(el=>rvObs.observe(el));
 
-/* ── SUB NAV: JS scroll (fixes jump) ── */
-const NAV_OFFSET = 56 + 10 + 44 + 20;
-document.querySelectorAll('#subNav a').forEach(a => {
-  a.addEventListener('click', e => {
+/* ── SUB NAV ── */
+const NAV_OFFSET=56+10+44+20;
+document.querySelectorAll('#subNav a').forEach(a=>{
+  a.addEventListener('click',e=>{
     e.preventDefault();
-    const target = document.getElementById(a.getAttribute('href').slice(1));
-    if (target) window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - NAV_OFFSET, behavior: 'smooth' });
+    const t=document.getElementById(a.getAttribute('href').slice(1));
+    if(t) window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-NAV_OFFSET,behavior:'smooth'});
   });
 });
-
-/* ── SUB NAV ACTIVE ── */
-const secs = document.querySelectorAll('section[id]');
-const subAs = document.querySelectorAll('#subNav a');
-new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      subAs.forEach(a => a.classList.remove('active'));
-      const a = document.querySelector(`#subNav a[href="#${e.target.id}"]`);
-      if (a) a.classList.add('active');
-    }
-  });
-}, { rootMargin: `-${NAV_OFFSET}px 0px -55% 0px` }).observe;
-
-// use forEach for IObs
-const snObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      subAs.forEach(a => a.classList.remove('active'));
-      const a = document.querySelector(`#subNav a[href="#${e.target.id}"]`);
-      if (a) a.classList.add('active');
-    }
-  });
-}, { rootMargin: `-${NAV_OFFSET}px 0px -52% 0px` });
-secs.forEach(s => snObs.observe(s));
+const subAs=document.querySelectorAll('#subNav a');
+const snObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){subAs.forEach(a=>a.classList.remove('active'));const a=document.querySelector(`#subNav a[href="#${e.target.id}"]`);if(a)a.classList.add('active');}});},{rootMargin:`-${NAV_OFFSET}px 0px -52% 0px`});
+document.querySelectorAll('section[id]').forEach(s=>snObs.observe(s));
 </script>
 </body>
 </html>

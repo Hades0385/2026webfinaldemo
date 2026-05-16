@@ -8,160 +8,130 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600&family=Noto+Sans+TC:wght@300;400;500&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <style>
-    :root {
-      --bg:    #131312;
-      --bg2:   #191917;
-      --bg3:   #1e1d1b;
-      --text:  #d8d3c8;
-      --muted: #6a6760;
-      --line:  #252320;
-      --qs:    #996040;
-      --dn:    #4d6b38;
-      --nav-h: 56px;
+    :root{
+      --bg:#131312;--bg2:#191917;--bg3:#1e1d1b;
+      --text:#d8d3c8;--muted:#6a6760;--line:#252320;
+      --qs:#996040;--qs-dim:#c07850;
+      --dn:#4d6b38;--dn-dim:#6a9450;
+      --nav-h:56px;
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth}
-    body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;font-size:.9rem}
+    html,body{height:100%}
+    body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;font-size:.9rem}
 
-    /* ── MAIN NAV ── */
-    nav.main-nav{
-      position:fixed;top:0;right:0;height:var(--nav-h);
-      z-index:500;padding:0 2.5rem;
-      display:flex;align-items:center;gap:2rem;
-      background:rgba(19,19,18,.92);
-      border-bottom:1px solid var(--line);
-      width:100%;justify-content:flex-end;
-    }
-    nav.main-nav a{font-size:.85rem;letter-spacing:.1em;text-decoration:none;color:rgba(255,255,255,.55);transition:color .25s}
+    /* ── NAV ── */
+    nav.main-nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:300;display:flex;align-items:center;padding:0 2.5rem;gap:2rem;background:rgba(19,19,18,.9);border-bottom:1px solid var(--line)}
+    .nav-brand{margin-right:auto;font-family:'Noto Serif TC',serif;font-size:.95rem;font-weight:300;letter-spacing:.22em;color:rgba(255,255,255,.38);text-decoration:none}
+    nav.main-nav a{font-size:.83rem;letter-spacing:.1em;text-decoration:none;color:rgba(255,255,255,.48);transition:color .25s}
     nav.main-nav a.active{color:#c88050}
     nav.main-nav a:hover{color:var(--text)}
-    .nav-brand{margin-right:auto;font-family:'Noto Serif TC',serif;font-size:1.05rem;font-weight:300;color:rgba(255,255,255,.5);letter-spacing:.15em}
 
     /* ── LAYOUT ── */
-    .page-wrap{
-      display:grid;
-      grid-template-columns:360px 1fr;
-      height:100vh;
-      padding-top:var(--nav-h);
-    }
+    .page-wrap{display:grid;grid-template-columns:340px 1fr;height:100%;padding-top:var(--nav-h)}
 
     /* ── SIDEBAR ── */
-    .sidebar{
-      background:var(--bg2);
-      border-right:1px solid var(--line);
-      display:flex;flex-direction:column;
-      overflow:hidden;
-    }
-    .sidebar-header{
-      padding:1.8rem 1.8rem 1.2rem;
-      border-bottom:1px solid var(--line);
-      flex-shrink:0;
-    }
-    .sidebar-eyebrow{font-size:.68rem;letter-spacing:.5em;color:var(--muted);margin-bottom:.3rem}
-    .sidebar-title{font-family:'Noto Serif TC',serif;font-size:1.5rem;font-weight:300;letter-spacing:.1em}
-
-    /* Filter tabs */
-    .filter-tabs{
-      display:flex;
-      border-bottom:1px solid var(--line);
-      flex-shrink:0;
-    }
-    .ftab{
-      flex:1;padding:.7rem 0;
-      font-size:.74rem;letter-spacing:.22em;
-      background:transparent;border:none;
-      color:var(--muted);cursor:pointer;
-      border-bottom:2px solid transparent;
-      transition:color .2s,border-color .2s;
-      font-family:'Noto Sans TC',sans-serif;
-    }
-    .ftab.active{color:var(--text);border-bottom-color:#c88050}
+    .sidebar{background:var(--bg2);border-right:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden}
+    .sidebar-header{padding:1.6rem 1.8rem 1.1rem;border-bottom:1px solid var(--line);flex-shrink:0}
+    .sidebar-eyebrow{font-size:.65rem;letter-spacing:.5em;color:var(--muted);margin-bottom:.25rem}
+    .sidebar-title{font-family:'Noto Serif TC',serif;font-size:1.4rem;font-weight:300;letter-spacing:.1em}
+    .filter-tabs{display:flex;border-bottom:1px solid var(--line);flex-shrink:0}
+    .ftab{flex:1;padding:.62rem 0;font-size:.7rem;letter-spacing:.22em;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;transition:color .2s,border-color .2s;font-family:'Noto Sans TC',sans-serif}
     .ftab:hover{color:var(--text)}
+    .ftab.active{color:var(--text);border-bottom-color:#c88050}
     .ftab.qs-tab.active{border-bottom-color:var(--qs)}
     .ftab.dn-tab.active{border-bottom-color:var(--dn)}
-
-    /* Card list */
+    .count-badge{font-size:.67rem;letter-spacing:.1em;color:var(--muted);padding:.42rem 1.8rem;border-bottom:1px solid var(--line);flex-shrink:0}
+    .count-badge span{color:var(--text)}
     .card-list{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
-    .card-list::-webkit-scrollbar{width:4px}
+    .card-list::-webkit-scrollbar{width:3px}
     .card-list::-webkit-scrollbar-thumb{background:var(--line)}
 
-    .food-card{
-      padding:1.2rem 1.8rem;
-      border-bottom:1px solid var(--line);
-      cursor:pointer;
-      transition:background .2s;
-      display:flex;gap:1rem;align-items:flex-start;
-    }
+    /* ── FOOD CARDS ── */
+    .food-card{padding:1rem 1.8rem;border-bottom:1px solid var(--line);cursor:pointer;transition:background .18s;display:flex;gap:.85rem;align-items:flex-start}
     .food-card:hover{background:var(--bg3)}
-    .food-card.highlighted{background:var(--bg3)}
-
-    .card-dot{
-      width:9px;height:9px;border-radius:50%;
-      flex-shrink:0;margin-top:.55rem;
-    }
-    .card-dot.qs{background:var(--qs)}
-    .card-dot.dn{background:var(--dn)}
-
+    .food-card.active{background:var(--bg3);border-left:2px solid transparent}
+    .food-card.qs-active{border-left-color:var(--qs)}.food-card.dn-active{border-left-color:var(--dn)}
+    .card-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:.52rem}
+    .card-dot.qs{background:var(--qs)}.card-dot.dn{background:var(--dn)}
     .card-body{flex:1;min-width:0}
-    .card-name{font-family:'Noto Serif TC',serif;font-size:.98rem;font-weight:400;letter-spacing:.04em;margin-bottom:.2rem}
-    .card-type{font-size:.68rem;letter-spacing:.2em;margin-bottom:.35rem}
-    .card-type.qs{color:var(--qs)}.card-type.dn{color:var(--dn)}
-    .card-desc{font-size:.78rem;line-height:1.7;color:var(--muted)}
-    .card-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.55rem}
-    .card-tag{font-size:.64rem;letter-spacing:.12em;padding:.12rem .5rem;border:1px solid var(--line);color:var(--muted)}
+    .card-name{font-family:'Noto Serif TC',serif;font-size:.92rem;font-weight:400;letter-spacing:.04em;margin-bottom:.12rem}
+    .card-type{font-size:.65rem;letter-spacing:.2em;margin-bottom:.28rem}
+    .card-type.qs{color:var(--qs-dim)}.card-type.dn{color:var(--dn-dim)}
+    .card-desc{font-size:.76rem;line-height:1.62;color:var(--muted)}
+    .card-thumb{width:60px;height:60px;flex-shrink:0;overflow:hidden;border-radius:1px;background:var(--bg3)}
+    .card-thumb img{width:100%;height:100%;object-fit:cover;filter:saturate(.55) brightness(.78)}
 
     /* ── MAP ── */
-    #map{
-      flex:1;
-      width:100%;
-      height:100%;
-      background:var(--bg);
-    }
+    .map-wrap{position:relative;height:100%}
+    #map{width:100%;height:100%;background:var(--bg)}
 
-    /* Leaflet popup custom */
+    /* Map layer toggles */
+    .map-controls{position:absolute;bottom:1.4rem;right:1.4rem;z-index:400;display:flex;flex-direction:column;gap:.3rem}
+    .mc-btn{padding:.44rem 1rem;background:rgba(25,25,23,.85);backdrop-filter:blur(10px);border:1px solid var(--line);color:var(--muted);font-size:.68rem;letter-spacing:.2em;font-family:'Noto Sans TC',sans-serif;cursor:pointer;transition:color .2s,border-color .2s}
+    .mc-btn.active{color:var(--text);border-color:rgba(255,255,255,.18)}
+    .mc-btn.qs-btn.active{border-color:var(--qs);color:var(--qs-dim)}
+    .mc-btn.dn-btn.active{border-color:var(--dn);color:var(--dn-dim)}
+
+    /* ── RICH POPUP ── */
     .leaflet-popup-content-wrapper{
       background:var(--bg2);
       border:1px solid var(--line);
       border-radius:2px;
-      box-shadow:0 4px 24px rgba(0,0,0,.5);
+      box-shadow:0 8px 36px rgba(0,0,0,.55);
       color:var(--text);
       font-family:'Noto Sans TC',sans-serif;
+      padding:0;
+      overflow:hidden;
     }
+    .leaflet-popup-tip-container{margin-top:-1px}
     .leaflet-popup-tip{background:var(--bg2)}
-    .leaflet-popup-content{margin:14px 18px;min-width:180px}
-    .popup-name{font-family:'Noto Serif TC',serif;font-size:1rem;font-weight:400;margin-bottom:.2rem}
-    .popup-type{font-size:.68rem;letter-spacing:.22em;margin-bottom:.5rem}
-    .popup-type.qs{color:var(--qs)}.popup-type.dn{color:var(--dn)}
-    .popup-desc{font-size:.78rem;line-height:1.7;color:var(--muted)}
-    .leaflet-popup-close-button{color:var(--muted)!important;font-size:1rem!important;top:8px!important;right:10px!important}
-
-    /* Region toggle button */
-    .map-toggle{
-      position:absolute;bottom:2rem;right:2rem;z-index:400;
-      display:flex;flex-direction:column;gap:.4rem;
+    .leaflet-popup-content{margin:0;width:300px!important}
+    .leaflet-popup-close-button{
+      color:rgba(255,255,255,.5)!important;
+      font-size:1.1rem!important;
+      top:6px!important;right:10px!important;
+      z-index:10;text-shadow:0 1px 4px rgba(0,0,0,.6);
     }
-    .mtbtn{
-      padding:.55rem 1.2rem;
-      background:var(--bg2);border:1px solid var(--line);
-      color:var(--muted);font-size:.72rem;letter-spacing:.2em;
-      font-family:'Noto Sans TC',sans-serif;cursor:pointer;
-      transition:color .2s,border-color .2s,background .2s;
-    }
-    .mtbtn:hover,.mtbtn.active{background:var(--bg3);color:var(--text);border-color:rgba(255,255,255,.2)}
-    .mtbtn.qs-btn.active{border-color:var(--qs);color:#c07850}
-    .mtbtn.dn-btn.active{border-color:var(--dn);color:#6a9450}
 
-    /* Count badge */
-    .count-badge{
-      font-size:.7rem;letter-spacing:.1em;color:var(--muted);
-      padding:.5rem 1.8rem;border-bottom:1px solid var(--line);
+    /* popup inner layout */
+    .rp-img{
+      width:100%;height:170px;overflow:hidden;position:relative;background:var(--bg3);
       flex-shrink:0;
     }
-    .count-badge span{color:var(--text)}
+    .rp-img img{width:100%;height:100%;object-fit:cover;filter:saturate(.65) brightness(.82);display:block;transition:transform .5s}
+    .rp-img:hover img{transform:scale(1.04)}
 
+    /* mini carousel inside popup */
+    .rp-img .carousel,.rp-img .carousel-inner,.rp-img .carousel-item{height:100%}
+    .rp-img .carousel-item img{width:100%;height:100%;object-fit:cover;filter:saturate(.65) brightness(.82)}
+    .rp-indicators{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:5}
+    .rp-ind{width:16px;height:1.5px;background:rgba(255,255,255,.35);transition:background .2s;cursor:pointer;border:none;padding:0}
+    .rp-ind.active{background:rgba(255,255,255,.8)}
+
+    .rp-body{padding:1rem 1.1rem 1.1rem}
+    .rp-region-tag{font-size:.63rem;letter-spacing:.32em;display:flex;align-items:center;gap:.45rem;margin-bottom:.4rem}
+    .rp-rdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+    .rp-rdot.qs{background:var(--qs)}.rp-rdot.dn{background:var(--dn)}
+    .rp-region-label.qs{color:var(--qs-dim)}.rp-region-label.dn{color:var(--dn-dim)}
+    .rp-name{font-family:'Noto Serif TC',serif;font-size:1rem;font-weight:400;letter-spacing:.04em;margin-bottom:.22rem}
+    .rp-type{font-size:.65rem;letter-spacing:.2em;color:var(--muted);margin-bottom:.6rem}
+    .rp-desc{font-size:.77rem;line-height:1.75;color:var(--muted);margin-bottom:.7rem}
+    .rp-tags{display:flex;flex-wrap:wrap;gap:.28rem}
+    .rp-tag{font-size:.62rem;letter-spacing:.12em;padding:.12rem .48rem;border:1px solid var(--line);color:var(--muted)}
+
+    /* ── LEAFLET BASE ── */
+    .leaflet-tile-pane{filter:brightness(.82)}
+    .leaflet-control-zoom a{background:var(--bg2)!important;color:var(--text)!important;border-color:var(--line)!important}
+
+    /* Marker highlight: custom class added to active marker icon */
+    .marker-active svg path { /* can't easily target, use wrapper class */ }
+
+    /* ── RWD ── */
     @media(max-width:860px){
-      .page-wrap{grid-template-columns:1fr;grid-template-rows:auto 1fr}
-      .sidebar{max-height:45vh}
+      body{overflow-y:auto}
+      .page-wrap{grid-template-columns:1fr;grid-template-rows:50vh 1fr;height:auto}
+      .sidebar{max-height:none;order:2}
+      .map-wrap{height:50vh;order:1}
       nav.main-nav{padding:0 1.2rem;gap:1rem}
       .nav-brand{display:none}
     }
@@ -170,7 +140,7 @@
 <body>
 
 <nav class="main-nav">
-  <span class="nav-brand">山·田</span>
+  <a class="nav-brand" href="index.html">山·田</a>
   <a href="index.html">首頁</a>
   <a href="compare.html">深入比較</a>
   <a href="food.html" class="active">美食地圖</a>
@@ -178,36 +148,29 @@
 </nav>
 
 <div class="page-wrap">
-
-  <!-- ── SIDEBAR ── -->
+  <!-- Sidebar -->
   <div class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-eyebrow">FOOD MAP · 美食地圖</div>
       <div class="sidebar-title">在地好味道</div>
     </div>
-
-    <!-- Filter tabs -->
     <div class="filter-tabs">
-      <button class="ftab active"        data-filter="all" >全部</button>
-      <button class="ftab qs-tab"        data-filter="qs"  >旗山</button>
-      <button class="ftab dn-tab"        data-filter="dn"  >斗南</button>
+      <button class="ftab active"  data-filter="all">全部</button>
+      <button class="ftab qs-tab"  data-filter="qs" >旗山</button>
+      <button class="ftab dn-tab"  data-filter="dn" >斗南</button>
     </div>
-
     <div class="count-badge">顯示 <span id="countNum">12</span> 個地點</div>
-
-    <!-- Card list -->
     <div class="card-list" id="cardList"></div>
   </div>
 
-  <!-- ── MAP ── -->
-  <div style="position:relative;flex:1">
+  <!-- Map -->
+  <div class="map-wrap">
     <div id="map"></div>
-    <div class="map-toggle">
-      <button class="mtbtn qs-btn active" id="btnQs">旗山</button>
-      <button class="mtbtn dn-btn active" id="btnDn">斗南</button>
+    <div class="map-controls">
+      <button class="mc-btn qs-btn active" id="btnQs">旗山</button>
+      <button class="mc-btn dn-btn active" id="btnDn">斗南</button>
     </div>
   </div>
-
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -215,203 +178,215 @@
 <script>
 /* ── DATA ── */
 const places = [
-  /* 旗山 */
-  {
-    id:'qs1', region:'qs', name:'旗山老街阿婆芭蕉冰',
-    type:'冰品・甜食', lat:22.8896, lng:120.4776,
-    desc:'旗山老街的招牌冰品，以在地香蕉製成，口感綿密清甜，是旗山必嚐伴手禮。',
-    tags:['老街必訪','芭蕉冰','在地特產']
-  },
-  {
-    id:'qs2', region:'qs', name:'旗山香蕉蛋糕老店',
-    type:'烘焙・伴手禮', lat:22.8900, lng:120.4782,
-    desc:'以旗山香蕉入味的軟式蛋糕，香氣濃郁，是遊客採購伴手禮的首選門店。',
-    tags:['香蕉蛋糕','伴手禮','排隊名店']
-  },
-  {
-    id:'qs3', region:'qs', name:'旗山肉圓',
-    type:'傳統小吃', lat:22.8892, lng:120.4770,
-    desc:'旗山式肉圓皮薄透亮、內餡飽滿，以清蒸方式呈現，佐以特製醬汁，風味獨特。',
-    tags:['傳統小吃','肉圓','在地早餐']
-  },
-  {
-    id:'qs4', region:'qs', name:'旗山米糕筒',
-    type:'傳統小吃', lat:22.8902, lng:120.4790,
-    desc:'以竹筒盛裝的糯米飯，配以香菇、蝦米等配料蒸製，是老一輩旗山人的懷舊滋味。',
-    tags:['米糕','懷舊古早味','竹筒']
-  },
-  {
-    id:'qs5', region:'qs', name:'旗山豬腳飯',
-    type:'正餐・小吃', lat:22.8888, lng:120.4784,
-    desc:'滷製入味的豬腳搭配白飯，是旗山市場一帶長久以來深受在地人喜愛的平價餐食。',
-    tags:['豬腳','市場美食','平價']
-  },
-  {
-    id:'qs6', region:'qs', name:'旗山傳統市場早餐',
-    type:'市場・早餐', lat:22.8895, lng:120.4768,
-    desc:'旗山傳統市場天未亮便人聲鼎沸，各式早點攤位林立，涵蓋粿仔湯、虱目魚粥等台式早餐。',
-    tags:['傳統市場','早餐','粿仔湯']
-  },
-  /* 斗南 */
-  {
-    id:'dn1', region:'dn', name:'斗南東市場（第二市場）',
-    type:'市場・食材', lat:22.6835, lng:120.4768,
-    desc:'雲林最具活力的傳統市場之一，清晨即聚集大批在地農產攤位，蔬果、豆類與熟食一應俱全。',
-    tags:['傳統市場','在地農產','早市']
-  },
-  {
-    id:'dn2', region:'dn', name:'斗南蚵仔麵線',
-    type:'傳統小吃', lat:22.6842, lng:120.4752,
-    desc:'以新鮮蚵仔搭配手工麵線，湯頭以大骨熬製，配上芫荽與蒜泥，是斗南在地早點好味道。',
-    tags:['蚵仔麵線','早餐','古早味']
-  },
-  {
-    id:'dn3', region:'dn', name:'斗南蒜頭酥店',
-    type:'農產加工・伴手禮', lat:22.6830, lng:120.4760,
-    desc:'以斗南出產的在地蒜頭製成酥炸蒜片，香氣濃郁、酥脆不油膩，是雲林農產代表伴手禮。',
-    tags:['蒜頭酥','雲林特產','伴手禮']
-  },
-  {
-    id:'dn4', region:'dn', name:'斗南碗粿老店',
-    type:'傳統小吃', lat:22.6838, lng:120.4748,
-    desc:'以米漿蒸製的碗粿，內藏豬肉與蛋黃，佐以甜醬油膏，是台灣西南部常見的懷舊點心。',
-    tags:['碗粿','傳統小吃','懷舊']
-  },
-  {
-    id:'dn5', region:'dn', name:'斗南花椰菜餐廳',
-    type:'農家料理', lat:22.6848, lng:120.4755,
-    desc:'以斗南盛產的花椰菜為主角，發展出多道創意料理，從涼拌到熱炒，展現在地農產的多元風味。',
-    tags:['花椰菜','農家料理','在地食材']
-  },
-  {
-    id:'dn6', region:'dn', name:'斗南米食館',
-    type:'正餐・米食', lat:22.6820, lng:120.4740,
-    desc:'以雲林在地米為主材料，提供控肉飯、米糕、竹筒飯等多種台式米食，推廣在地糧食文化。',
-    tags:['米食文化','在地米','台式料理']
-  },
+  {id:'qs1',region:'qs',name:'旗山老街阿婆芭蕉冰',type:'冰品・甜食',lat:22.8896,lng:120.4776,
+   desc:'旗山老街最具代表性的冰品，以在地香蕉製成，口感綿密清甜，是旗山必嚐伴手禮。',tags:['老街必訪','芭蕉冰','在地特產'],
+   images:[{url:'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&q=70',cap:'旗山老街芭蕉冰'},{url:'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=70',cap:'老街小吃聚落'},{url:'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=500&q=70',cap:'旗山老街夜景'}]},
+  {id:'qs2',region:'qs',name:'旗山香蕉蛋糕老店',type:'烘焙・伴手禮',lat:22.8900,lng:120.4782,
+   desc:'以旗山香蕉入味的軟式蛋糕，香氣濃郁，是遊客採購伴手禮的排隊名店。',tags:['香蕉蛋糕','伴手禮','排隊名店'],
+   images:[{url:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=500&q=70',cap:'旗山香蕉蛋糕'},{url:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500&q=70',cap:'多口味烘焙點心'}]},
+  {id:'qs3',region:'qs',name:'旗山傳統肉圓',type:'傳統小吃',lat:22.8892,lng:120.4770,
+   desc:'旗山式肉圓皮薄透亮、內餡飽滿，以清蒸方式呈現，佐以特製醬汁，風味獨特。',tags:['傳統小吃','肉圓','在地早餐'],
+   images:[{url:'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=500&q=70',cap:'旗山傳統肉圓'},{url:'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&q=70',cap:'清蒸肉圓特寫'}]},
+  {id:'qs4',region:'qs',name:'旗山糖廠旁小吃區',type:'市場・小吃聚落',lat:22.8850,lng:120.4820,
+   desc:'旗山糖廠舊址周邊形成小吃聚落，匯集米糕筒、鹽酥雞、古早味剉冰等各式小吃。',tags:['米糕','懷舊古早味','聚落'],
+   images:[{url:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&q=70',cap:'旗山糖廠周邊小吃'},{url:'https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=500&q=70',cap:'在地飲食文化'}]},
+  {id:'qs5',region:'qs',name:'旗山豬腳飯',type:'正餐・小吃',lat:22.8888,lng:120.4784,
+   desc:'滷製入味的豬腳搭配白飯，是旗山市場一帶長久以來深受在地人喜愛的平價餐食。',tags:['豬腳','市場美食','平價'],
+   images:[{url:'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=500&q=70',cap:'滷豬腳配飯'},{url:'https://images.unsplash.com/photo-1534361960057-19f4434e0d4b?w=500&q=70',cap:'傳統市場料理'}]},
+  {id:'qs6',region:'qs',name:'旗山傳統市場',type:'市場・早餐',lat:22.8895,lng:120.4768,
+   desc:'旗山傳統市場天未亮便人聲鼎沸，各式早點攤位林立，粿仔湯、虱目魚粥等台式早餐一應俱全。',tags:['傳統市場','早餐','粿仔湯'],
+   images:[{url:'https://images.unsplash.com/photo-1534361960057-19f4434e0d4b?w=500&q=70',cap:'旗山傳統市場'},{url:'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=70',cap:'市場蔬果攤位'},{url:'https://images.unsplash.com/photo-1607197109166-e69dc4f5babe?w=500&q=70',cap:'台式早點文化'}]},
+  {id:'dn1',region:'dn',name:'斗南東市場',type:'市場・食材',lat:23.6835,lng:120.4768,
+   desc:'雲林最具活力的傳統市場之一，清晨聚集大批在地農產攤位，蔬果、豆類與熟食一應俱全。',tags:['傳統市場','在地農產','早市'],
+   images:[{url:'https://images.unsplash.com/photo-1534361960057-19f4434e0d4b?w=500&q=70',cap:'斗南東市場農產'},{url:'https://images.unsplash.com/photo-1519996409144-56c88c9aa612?w=500&q=70',cap:'雲林在地蔬菜'},{url:'https://images.unsplash.com/photo-1607197109166-e69dc4f5babe?w=500&q=70',cap:'清晨市場人潮'}]},
+  {id:'dn2',region:'dn',name:'斗南蚵仔麵線',type:'傳統小吃',lat:23.6842,lng:120.4752,
+   desc:'以新鮮蚵仔搭配手工麵線，湯頭以大骨熬製，配上芫荽與蒜泥，是斗南在地早點好味道。',tags:['蚵仔麵線','早餐','古早味'],
+   images:[{url:'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=500&q=70',cap:'蚵仔麵線'},{url:'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=500&q=70',cap:'車站周邊小吃'}]},
+  {id:'dn3',region:'dn',name:'斗南蒜頭酥',type:'農產加工・伴手禮',lat:23.6830,lng:120.4760,
+   desc:'以斗南出產的在地蒜頭製成酥炸蒜片，香氣濃郁、酥脆不油膩，是雲林農產代表伴手禮。',tags:['蒜頭酥','雲林特產','伴手禮'],
+   images:[{url:'https://images.unsplash.com/photo-1501200291289-c5a76c232e5f?w=500&q=70',cap:'斗南在地蒜頭'},{url:'https://images.unsplash.com/photo-1516849841032-87cbac4d88f7?w=500&q=70',cap:'蒜頭酥加工品'}]},
+  {id:'dn4',region:'dn',name:'斗南碗粿老店',type:'傳統小吃',lat:23.6838,lng:120.4748,
+   desc:'以米漿蒸製的碗粿，內藏豬肉與蛋黃，佐以甜醬油膏，是台灣西南部常見的懷舊點心。',tags:['碗粿','傳統小吃','懷舊'],
+   images:[{url:'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=500&q=70',cap:'碗粿傳統米食'},{url:'https://images.unsplash.com/photo-1607197109166-e69dc4f5babe?w=500&q=70',cap:'斗南古早滋味'}]},
+  {id:'dn5',region:'dn',name:'斗南花椰菜料理',type:'農家料理',lat:23.6848,lng:120.4755,
+   desc:'以斗南盛產的花椰菜為主角，發展出多道創意料理，從涼拌到熱炒，展現在地農產的多元風味。',tags:['花椰菜','農家料理','在地食材'],
+   images:[{url:'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&q=70',cap:'雲林花椰菜'},{url:'https://images.unsplash.com/photo-1519996409144-56c88c9aa612?w=500&q=70',cap:'農家料理在地食材'}]},
+  {id:'dn6',region:'dn',name:'斗南米食文化館',type:'正餐・米食',lat:23.6820,lng:120.4740,
+   desc:'以雲林在地米為主材料，提供控肉飯、米糕、竹筒飯等多種台式米食，推廣在地糧食文化。',tags:['米食文化','在地米','台式料理'],
+   images:[{url:'https://images.unsplash.com/photo-1606914501449-5a96b6ce24ca?w=500&q=70',cap:'雲林稻米文化'},{url:'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=500&q=70',cap:'台式米食料理'},{url:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&q=70',cap:'米食文化館'}]}
 ];
 
-/* ── MAP INIT ── */
-const map = L.map('map', {
-  center: [22.8, 120.477],
-  zoom: 10,
-  zoomControl: true,
-  preferCanvas: true
-});
+/* ── MAP ── */
+const map = L.map('map', { zoomControl:true, scrollWheelZoom:true, attributionControl:false });
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom:19 }).addTo(map);
 
-/* Dark tile layer */
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-  attribution: '© OpenStreetMap © CARTO',
-  maxZoom: 19
-}).addTo(map);
-
-/* Custom marker SVG */
-function makeIcon(region) {
-  const color = region === 'qs' ? '#996040' : '#4d6b38';
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" viewBox="0 0 22 30">
-    <path d="M11 0C4.925 0 0 4.925 0 11c0 7.667 11 19 11 19S22 18.667 22 11C22 4.925 17.075 0 11 0z" fill="${color}"/>
-    <circle cx="11" cy="11" r="4.5" fill="rgba(255,255,255,.85)"/>
+/* Icon factory */
+function makeMarkerSVG(color, active) {
+  const s = active ? 28 : 20;
+  const r = active ? 38 : 28;
+  const dot = active ? 5 : 3.5;
+  const opacity = active ? 1 : 0.85;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${r}" viewBox="0 0 ${s} ${r}" style="filter:drop-shadow(0 2px 6px rgba(0,0,0,${active?'.6':'.35'}))">
+    <path d="M${s/2} 0C${s/2*0.448} 0 0 ${s/2*0.448} 0 ${s/2}c0 ${r*0.536} ${s/2} ${r*0.643} ${s/2} ${r*0.643}S${s} ${s/2+r*0.536} ${s} ${s/2}C${s} ${s/2*0.448} ${s-s/2*0.448} 0 ${s/2} 0z" fill="${color}" opacity="${opacity}"/>
+    <circle cx="${s/2}" cy="${s/2}" r="${dot}" fill="rgba(255,255,255,.9)"/>
   </svg>`;
-  return L.divIcon({
-    html: svg,
-    iconSize: [22, 30],
-    iconAnchor: [11, 30],
-    popupAnchor: [0, -32],
-    className: ''
-  });
 }
 
-/* Create markers */
+function makeIcon(region, active=false) {
+  const color = region === 'qs' ? '#996040' : '#4d6b38';
+  const svg = makeMarkerSVG(color, active);
+  const s = active ? [28,38] : [20,28];
+  return L.divIcon({ html:svg, iconSize:s, iconAnchor:[s[0]/2,s[1]], popupAnchor:[0,-s[1]], className:'' });
+}
+
+/* Build rich popup HTML */
+function buildPopupHTML(p) {
+  const imgs = p.images;
+  const hasMult = imgs.length > 1;
+  const pid = `rpcar-${p.id}`;
+
+  let carouselInner = imgs.map((img, i) =>
+    `<div class="carousel-item${i===0?' active':''}">
+       <img src="${img.url}" alt="${img.cap}"/>
+     </div>`
+  ).join('');
+
+  let indicators = hasMult ? imgs.map((_, i) =>
+    `<button class="rp-ind${i===0?' active':''}" data-slide="${i}" aria-label="slide ${i+1}"></button>`
+  ).join('') : '';
+
+  return `
+    <div class="rp-img">
+      ${hasMult
+        ? `<div id="${pid}" class="carousel slide" data-bs-ride="false" style="height:100%">
+             <div class="carousel-inner" style="height:100%">${carouselInner}</div>
+             <button class="carousel-control-prev" type="button" data-bs-target="#${pid}" data-bs-slide="prev" style="width:1.8rem"><span class="carousel-control-prev-icon" style="width:.85rem;height:.85rem"></span></button>
+             <button class="carousel-control-next" type="button" data-bs-target="#${pid}" data-bs-slide="next" style="width:1.8rem"><span class="carousel-control-next-icon" style="width:.85rem;height:.85rem"></span></button>
+             <div class="rp-indicators">${indicators}</div>
+           </div>`
+        : `<img src="${imgs[0].url}" alt="${imgs[0].cap}"/>`
+      }
+    </div>
+    <div class="rp-body">
+      <div class="rp-region-tag">
+        <div class="rp-rdot ${p.region}"></div>
+        <span class="rp-region-label ${p.region}">${p.region==='qs'?'旗山':'斗南'}</span>
+        <span style="color:var(--line);margin:0 .2rem">·</span>
+        <span style="font-size:.63rem;letter-spacing:.15em;color:var(--muted)">${p.type}</span>
+      </div>
+      <div class="rp-name">${p.name}</div>
+      <div class="rp-desc">${p.desc}</div>
+      <div class="rp-tags">${p.tags.map(t=>`<span class="rp-tag">${t}</span>`).join('')}</div>
+    </div>`;
+}
+
+/* Markers */
 const markerMap = {};
 const layerQs = L.layerGroup().addTo(map);
 const layerDn = L.layerGroup().addTo(map);
+let activeId = null;
 
 places.forEach(p => {
   const layer = p.region === 'qs' ? layerQs : layerDn;
-  const m = L.marker([p.lat, p.lng], { icon: makeIcon(p.region) })
-    .bindPopup(`
-      <div class="popup-name">${p.name}</div>
-      <div class="popup-type ${p.region}">${p.type}</div>
-      <div class="popup-desc">${p.desc}</div>
-    `)
-    .addTo(layer);
-  m.on('click', () => highlightCard(p.id));
-  markerMap[p.id] = m;
+  const m = L.marker([p.lat, p.lng], { icon: makeIcon(p.region) }).addTo(layer);
+
+  m.on('click', () => {
+    activateMarker(p.id);
+    /* highlight card */
+    document.querySelectorAll('.food-card').forEach(c => c.classList.remove('active','qs-active','dn-active'));
+    const card = document.querySelector(`.food-card[data-id="${p.id}"]`);
+    if (card) { card.classList.add('active',`${p.region}-active`); card.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+  });
+
+  markerMap[p.id] = { marker: m, region: p.region };
 });
 
-/* ── RENDER CARDS ── */
+function activateMarker(id) {
+  /* reset previous */
+  if (activeId && markerMap[activeId]) {
+    const prev = markerMap[activeId];
+    prev.marker.setIcon(makeIcon(prev.region, false));
+  }
+  activeId = id;
+  const cur = markerMap[id];
+  cur.marker.setIcon(makeIcon(cur.region, true));
+
+  const p = places.find(x => x.id === id);
+  cur.marker.bindPopup(buildPopupHTML(p), {
+    maxWidth:300, minWidth:300, className:'', autoPan:true, autoPanPaddingTopLeft:L.point(60,80)
+  }).openPopup();
+}
+
+/* Reset on popup close */
+map.on('popupclose', () => {
+  if (activeId && markerMap[activeId]) {
+    markerMap[activeId].marker.setIcon(makeIcon(markerMap[activeId].region, false));
+  }
+  activeId = null;
+  document.querySelectorAll('.food-card').forEach(c => c.classList.remove('active','qs-active','dn-active'));
+});
+
+map.fitBounds(L.latLngBounds(places.map(p=>[p.lat,p.lng])), { padding:[60,60] });
+
+/* ── SIDEBAR CARDS ── */
 let activeFilter = 'all';
-let showQs = true, showDn = true;
 
 function renderCards(filter) {
-  const list = document.getElementById('cardList');
-  const filtered = places.filter(p => filter === 'all' || p.region === filter);
+  const filtered = places.filter(p => filter==='all' || p.region===filter);
   document.getElementById('countNum').textContent = filtered.length;
-  list.innerHTML = filtered.map(p => `
-    <div class="food-card" data-id="${p.id}" data-region="${p.region}" onclick="flyTo('${p.id}')">
+  document.getElementById('cardList').innerHTML = filtered.map(p => `
+    <div class="food-card${p.id===activeId?` active ${p.region}-active`:''}" data-id="${p.id}" onclick="flyTo('${p.id}')">
       <div class="card-dot ${p.region}"></div>
       <div class="card-body">
         <div class="card-name">${p.name}</div>
         <div class="card-type ${p.region}">${p.type}</div>
         <div class="card-desc">${p.desc}</div>
-        <div class="card-tags">${p.tags.map(t=>`<span class="card-tag">${t}</span>`).join('')}</div>
       </div>
-    </div>
-  `).join('');
+      <div class="card-thumb"><img src="${p.images[0].url}" alt="${p.name}" loading="lazy"/></div>
+    </div>`).join('');
 }
 
 function flyTo(id) {
-  const p = places.find(x => x.id === id);
+  const p = places.find(x => x.id===id);
   if (!p) return;
-  map.flyTo([p.lat, p.lng], 15, { duration: 1.2 });
-  setTimeout(() => markerMap[id].openPopup(), 1300);
-  highlightCard(id);
-}
-
-function highlightCard(id) {
-  document.querySelectorAll('.food-card').forEach(c => c.classList.remove('highlighted'));
-  const card = document.querySelector(`.food-card[data-id="${id}"]`);
-  if (card) {
-    card.classList.add('highlighted');
-    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  /* ensure layer is visible */
+  const layer = p.region==='qs' ? layerQs : layerDn;
+  if (!map.hasLayer(layer)) {
+    layer.addTo(map);
+    document.getElementById(p.region==='qs'?'btnQs':'btnDn').classList.add('active');
   }
+  map.flyTo([p.lat, p.lng], 15, { duration:1.0 });
+  setTimeout(() => activateMarker(id), 1100);
+  renderCards(activeFilter); /* re-render to update active state */
 }
 
-/* Filter tabs */
+/* filter tabs */
 document.querySelectorAll('.ftab').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     activeFilter = btn.dataset.filter;
     renderCards(activeFilter);
-
-    /* Also fly to region */
-    if (activeFilter === 'qs') map.flyTo([22.889, 120.478], 14, {duration:1.2});
-    else if (activeFilter === 'dn') map.flyTo([22.683, 120.475], 14, {duration:1.2});
-    else map.flyTo([22.8, 120.477], 10, {duration:1.2});
+    if (activeFilter==='qs') map.flyTo([22.889,120.478],14,{duration:1});
+    else if (activeFilter==='dn') map.flyTo([23.683,120.475],14,{duration:1});
+    else map.fitBounds(L.latLngBounds(places.map(p=>[p.lat,p.lng])),{padding:[60,60],animate:true});
   });
 });
 
-/* Layer toggle buttons */
-document.getElementById('btnQs').addEventListener('click', () => {
-  showQs = !showQs;
-  document.getElementById('btnQs').classList.toggle('active', showQs);
+/* layer toggles */
+let showQs=true, showDn=true;
+document.getElementById('btnQs').addEventListener('click',()=>{
+  showQs=!showQs;
+  document.getElementById('btnQs').classList.toggle('active',showQs);
   showQs ? layerQs.addTo(map) : layerQs.remove();
 });
-document.getElementById('btnDn').addEventListener('click', () => {
-  showDn = !showDn;
-  document.getElementById('btnDn').classList.toggle('active', showDn);
+document.getElementById('btnDn').addEventListener('click',()=>{
+  showDn=!showDn;
+  document.getElementById('btnDn').classList.toggle('active',showDn);
   showDn ? layerDn.addTo(map) : layerDn.remove();
 });
 
-/* Init */
 renderCards('all');
-
-/* Fit both regions on load */
-const bounds = L.latLngBounds(
-  places.map(p => [p.lat, p.lng])
-);
-map.fitBounds(bounds, { padding: [60, 60] });
 </script>
 </body>
 </html>
