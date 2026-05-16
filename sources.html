@@ -29,22 +29,31 @@
     /* ── NAV ── */
     nav.main-nav {
       position: fixed;
-      top: 0; right: 0;
-      z-index: 1000;
-      padding: 1.5rem 2.5rem;
-      display: flex;
-      gap: 2rem;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      z-index: 300;
+      display: flex; align-items: center;
+      padding: 0 2.5rem; gap: 2rem;
+      background: rgba(19,19,18,.9);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .nav-brand {
+      margin-right: auto;
+      font-family: 'Noto Serif TC', serif;
+      font-size: .95rem; font-weight: 300;
+      letter-spacing: .22em;
+      color: rgba(255,255,255,.38);
+      text-decoration: none;
     }
     nav.main-nav a {
-      font-size: 0.9rem;
-      font-weight: 400;
-      letter-spacing: 0.1em;
+      font-size: .83rem;
+      letter-spacing: .1em;
       text-decoration: none;
-      color: rgba(255,255,255,0.8);
-      transition: color 0.3s;
+      color: rgba(255,255,255,.48);
+      transition: color .25s;
     }
-    nav.main-nav a.active { color: var(--accent-warm); font-weight: 500; }
-    nav.main-nav a:hover  { color: #fff; }
+    nav.main-nav a.active { color: #c88050; }
+    nav.main-nav a:hover  { color: rgba(255,255,255,.9); }
 
     /* ── HEADER ── */
     .page-header {
@@ -188,6 +197,7 @@
 <body>
 
 <nav class="main-nav">
+  <a class="nav-brand" href="index.html">山·田</a>
   <a href="index.html">首頁</a>
   <a href="compare.html">深入比較</a>
   <a href="food.html">美食地圖</a>
