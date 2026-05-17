@@ -476,7 +476,7 @@ function openModal(msg) {
   mr.textContent = region;
   mr.className = `modal-region ${regionClass}`;
   document.getElementById('modalName').textContent = msg.name || '匿名';
-  document.getElementById('modalTime').textContent = msg.timestamp || '';
+  document.getElementById('modalTime').textContent = msg.timestamp ? formatTime(msg.timestamp) : '';
   document.getElementById('modal').classList.add('open');
 }
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
