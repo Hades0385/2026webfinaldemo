@@ -387,7 +387,19 @@
 <script>
 
 /* ── CONFIG ── */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbx6R3dd4dBp6arQ2E_9lRdjbVy2OYZiCD1G_dahgxdVahzPSOV44IQsVHDeFkva6k3fLQ/exec'; 
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwrAdfNvSbDKkrpmMCRyFmDeXuLmcye3XfATXWrNgENAsdSFP8Ults1M0SoPI3PVyT4lQ/exec'; 
+
+/* ── IP (collected silently, included in payload) ── */
+let clientIP = '';
+async function fetchClientIP() {
+  try {
+    const r = await fetch('https://api.ipify.org?format=json', { signal: AbortSignal.timeout(4000) });
+    const d = await r.json();
+    clientIP = d.ip || '';
+  } catch (_) {
+    clientIP = 'unknown';
+  }
+}
 
 /* ── DEMO MESSAGES (fallback + preload) ── */
 const DEMO = [
@@ -502,7 +514,9 @@ document.getElementById('btnSubmit').addEventListener('click', async () => {
     name: name || '匿名',
     region,
     message,
-    timestamp: new Date().toLocaleString('zh-TW', { timeZone:'Asia/Taipei' })
+    timestamp: new Date().toISOString(),   /* ISO format → formatTime() 可正確解析 */
+    userAgent: navigator.userAgent,
+    ip: clientIP
   };
 
   /* optimistic UI — add to wall immediately */
@@ -576,21 +590,53 @@ function escHtml(str) {
 
 /* ── INIT ── */
 window.addEventListener('DOMContentLoaded', () => {
+  /* Block digits in region field */
+  document.getElementById('fRegion').addEventListener('input', function () {
+    const cleaned = this.value.replace(/[\d０-９]/g, '');
+    if (cleaned !== this.value) this.value = cleaned;
+  });
+  document.getElementById('fRegion').addEventListener('keydown', function (e) {
+    if (/^\d$/.test(e.key)) e.preventDefault();
+  });
+
+  /* Fetch IP silently in background */
+  fetchClientIP();
+
   /* minimum loading display time for visual polish */
   const minLoadTime = new Promise(r => setTimeout(r, 1200));
   Promise.all([loadMessages(), minLoadTime]).then(hideLoading);
 });
 
 function formatTime(ts) {
-  const d = new Date(ts);
+  if (!ts) return '';
+
+  let d = new Date(ts);
+
+  /* If native parse fails (e.g. zh-TW locale strings: "2025/1/15 上午10:30:00") */
+  if (isNaN(d.getTime())) {
+    const m = String(ts).match(
+      /(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})\s*(上午|下午|am|pm)?\s*(\d{1,2}):(\d{2})/i
+    );
+    if (m) {
+      let h = parseInt(m[5], 10);
+      const period = m[4];
+      if (period === '下午' || /^pm$/i.test(period||'')) { if (h < 12) h += 12; }
+      if (period === '上午' || /^am$/i.test(period||'')) { if (h === 12) h = 0; }
+      d = new Date(
+        parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10),
+        h, parseInt(m[6], 10)
+      );
+    }
+  }
+
+  /* Final fallback: return raw string as-is */
+  if (isNaN(d.getTime())) return String(ts);
 
   const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  const dd = String(d.getDate()).padStart(2, '0');
-
-  const hh = String(d.getHours()).padStart(2, '0');
-  const mi = String(d.getMinutes()).padStart(2, '0');
-
+  const mm   = String(d.getMonth() + 1).padStart(2, '0');
+  const dd   = String(d.getDate()).padStart(2, '0');
+  const hh   = String(d.getHours()).padStart(2, '0');
+  const mi   = String(d.getMinutes()).padStart(2, '0');
   return `${yyyy}/${mm}/${dd} ${hh}:${mi}`;
 }
 
