@@ -63,7 +63,7 @@
 
     /* ── MAP ── */
     .map-wrap{position:relative;height:100%}
-    #map{width:100%;height:100%;background:var(--bg)}
+    #map{width:100%;height:100%;background:#e8e4dc}
 
     /* Map layer toggles */
     .map-controls{position:absolute;bottom:1.4rem;right:1.4rem;z-index:400;display:flex;flex-direction:column;gap:.3rem}
@@ -120,7 +120,7 @@
     .rp-tag{font-size:.62rem;letter-spacing:.12em;padding:.12rem .48rem;border:1px solid var(--line);color:var(--muted)}
 
     /* ── LEAFLET BASE ── */
-    .leaflet-tile-pane{filter:brightness(.82)}
+    .leaflet-tile-pane{filter:none}
     .leaflet-control-zoom a{background:var(--bg2)!important;color:var(--text)!important;border-color:var(--line)!important}
 
     /* Marker highlight: custom class added to active marker icon */
@@ -179,47 +179,41 @@
 <script>
 /* ── DATA ── */
 const places = [
-  {id:'qs1',region:'qs',name:'旗山老街阿婆芭蕉冰',type:'冰品・甜食',lat:22.8896,lng:120.4776,
-   desc:'旗山老街最具代表性的冰品，以在地香蕉製成，口感綿密清甜，是旗山必嚐伴手禮。',tags:['老街必訪','芭蕉冰','在地特產'],
-   images:[{url:'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&q=70',cap:'旗山老街芭蕉冰'},{url:'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=70',cap:'老街小吃聚落'},{url:'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=500&q=70',cap:'旗山老街夜景'}]},
-  {id:'qs2',region:'qs',name:'旗山香蕉蛋糕老店',type:'烘焙・伴手禮',lat:22.8900,lng:120.4782,
-   desc:'以旗山香蕉入味的軟式蛋糕，香氣濃郁，是遊客採購伴手禮的排隊名店。',tags:['香蕉蛋糕','伴手禮','排隊名店'],
-   images:[{url:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=500&q=70',cap:'旗山香蕉蛋糕'},{url:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500&q=70',cap:'多口味烘焙點心'}]},
-  {id:'qs3',region:'qs',name:'旗山傳統肉圓',type:'傳統小吃',lat:22.8892,lng:120.4770,
-   desc:'旗山式肉圓皮薄透亮、內餡飽滿，以清蒸方式呈現，佐以特製醬汁，風味獨特。',tags:['傳統小吃','肉圓','在地早餐'],
-   images:[{url:'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=500&q=70',cap:'旗山傳統肉圓'},{url:'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&q=70',cap:'清蒸肉圓特寫'}]},
-  {id:'qs4',region:'qs',name:'旗山糖廠旁小吃區',type:'市場・小吃聚落',lat:22.8850,lng:120.4820,
-   desc:'旗山糖廠舊址周邊形成小吃聚落，匯集米糕筒、鹽酥雞、古早味剉冰等各式小吃。',tags:['米糕','懷舊古早味','聚落'],
-   images:[{url:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&q=70',cap:'旗山糖廠周邊小吃'},{url:'https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=500&q=70',cap:'在地飲食文化'}]},
-  {id:'qs5',region:'qs',name:'旗山豬腳飯',type:'正餐・小吃',lat:22.8888,lng:120.4784,
-   desc:'滷製入味的豬腳搭配白飯，是旗山市場一帶長久以來深受在地人喜愛的平價餐食。',tags:['豬腳','市場美食','平價'],
-   images:[{url:'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=500&q=70',cap:'滷豬腳配飯'},{url:'https://images.unsplash.com/photo-1534361960057-19f4434e0d4b?w=500&q=70',cap:'傳統市場料理'}]},
-  {id:'qs6',region:'qs',name:'旗山傳統市場',type:'市場・早餐',lat:22.8895,lng:120.4768,
-   desc:'旗山傳統市場天未亮便人聲鼎沸，各式早點攤位林立，粿仔湯、虱目魚粥等台式早餐一應俱全。',tags:['傳統市場','早餐','粿仔湯'],
-   images:[{url:'https://images.unsplash.com/photo-1534361960057-19f4434e0d4b?w=500&q=70',cap:'旗山傳統市場'},{url:'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=70',cap:'市場蔬果攤位'},{url:'https://images.unsplash.com/photo-1607197109166-e69dc4f5babe?w=500&q=70',cap:'台式早點文化'}]},
-  {id:'dn1',region:'dn',name:'斗南東市場',type:'市場・食材',lat:23.6835,lng:120.4768,
-   desc:'雲林最具活力的傳統市場之一，清晨聚集大批在地農產攤位，蔬果、豆類與熟食一應俱全。',tags:['傳統市場','在地農產','早市'],
-   images:[{url:'https://images.unsplash.com/photo-1534361960057-19f4434e0d4b?w=500&q=70',cap:'斗南東市場農產'},{url:'https://images.unsplash.com/photo-1519996409144-56c88c9aa612?w=500&q=70',cap:'雲林在地蔬菜'},{url:'https://images.unsplash.com/photo-1607197109166-e69dc4f5babe?w=500&q=70',cap:'清晨市場人潮'}]},
-  {id:'dn2',region:'dn',name:'斗南蚵仔麵線',type:'傳統小吃',lat:23.6842,lng:120.4752,
-   desc:'以新鮮蚵仔搭配手工麵線，湯頭以大骨熬製，配上芫荽與蒜泥，是斗南在地早點好味道。',tags:['蚵仔麵線','早餐','古早味'],
-   images:[{url:'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=500&q=70',cap:'蚵仔麵線'},{url:'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=500&q=70',cap:'車站周邊小吃'}]},
-  {id:'dn3',region:'dn',name:'斗南蒜頭酥',type:'農產加工・伴手禮',lat:23.6830,lng:120.4760,
-   desc:'以斗南出產的在地蒜頭製成酥炸蒜片，香氣濃郁、酥脆不油膩，是雲林農產代表伴手禮。',tags:['蒜頭酥','雲林特產','伴手禮'],
-   images:[{url:'https://images.unsplash.com/photo-1501200291289-c5a76c232e5f?w=500&q=70',cap:'斗南在地蒜頭'},{url:'https://images.unsplash.com/photo-1516849841032-87cbac4d88f7?w=500&q=70',cap:'蒜頭酥加工品'}]},
-  {id:'dn4',region:'dn',name:'斗南碗粿老店',type:'傳統小吃',lat:23.6838,lng:120.4748,
-   desc:'以米漿蒸製的碗粿，內藏豬肉與蛋黃，佐以甜醬油膏，是台灣西南部常見的懷舊點心。',tags:['碗粿','傳統小吃','懷舊'],
-   images:[{url:'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=500&q=70',cap:'碗粿傳統米食'},{url:'https://images.unsplash.com/photo-1607197109166-e69dc4f5babe?w=500&q=70',cap:'斗南古早滋味'}]},
-  {id:'dn5',region:'dn',name:'斗南花椰菜料理',type:'農家料理',lat:23.6848,lng:120.4755,
-   desc:'以斗南盛產的花椰菜為主角，發展出多道創意料理，從涼拌到熱炒，展現在地農產的多元風味。',tags:['花椰菜','農家料理','在地食材'],
-   images:[{url:'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&q=70',cap:'雲林花椰菜'},{url:'https://images.unsplash.com/photo-1519996409144-56c88c9aa612?w=500&q=70',cap:'農家料理在地食材'}]},
-  {id:'dn6',region:'dn',name:'斗南米食文化館',type:'正餐・米食',lat:23.6820,lng:120.4740,
-   desc:'以雲林在地米為主材料，提供控肉飯、米糕、竹筒飯等多種台式米食，推廣在地糧食文化。',tags:['米食文化','在地米','台式料理'],
-   images:[{url:'https://images.unsplash.com/photo-1606914501449-5a96b6ce24ca?w=500&q=70',cap:'雲林稻米文化'},{url:'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=500&q=70',cap:'台式米食料理'},{url:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&q=70',cap:'米食文化館'}]}
+  {id:'qs1',region:'qs',name:'旗山老街香蕉冰店',type:'冰品・甜食',lat:22.887551809069794,lng:120.48194988606387,
+   desc:'旗山老街上人氣最旺的香蕉冰攤，以旗山在地熟成香蕉製成，口感綿密清甜，是老街必嚐的夏日涼品。',tags:['香蕉冰','老街必訪','在地特產'],
+   images:[{url:'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&q=70',cap:'旗山老街香蕉冰'},{url:'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=500&q=70',cap:'旗山老街風情'}]},
+  {id:'qs2',region:'qs',name:'鮮緹香蕉蛋捲',type:'烘焙・伴手禮',lat:22.886367792593614,lng:120.48209914402558,
+   desc:'以旗山新鮮香蕉入餡的手工蛋捲，外皮薄脆、內餡香濃，是遊客最愛採買的在地特色伴手禮。',tags:['香蕉蛋捲','手工烘焙','伴手禮'],
+   images:[{url:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=500&q=70',cap:'鮮緹香蕉蛋捲'},{url:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500&q=70',cap:'手工烘焙點心'}]},
+  {id:'qs3',region:'qs',name:'吳記肉丸',type:'傳統小吃',lat:22.88495306098554,lng:120.48107133422405,
+   desc:'旗山在地老字號肉丸，外皮以地瓜粉製成，半透明Q彈，內餡豬肉飽滿鮮嫩，佐以特製甜辣醬，是旗山人記憶中的家鄉味。',tags:['肉丸','老字號','傳統小吃'],
+   images:[{url:'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=500&q=70',cap:'吳記肉丸'},{url:'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&q=70',cap:'傳統肉丸特寫'}]},
+  {id:'qs4',region:'qs',name:'旗山第一公有零售市場',type:'傳統市場・早餐',lat:22.889302765036234,lng:120.48226475111564,
+   desc:'旗山最核心的傳統市場，清晨即匯聚在地攤販，蔬果、熟食、粿仔湯、虱目魚粥一應俱全，是感受旗山日常飲食文化的最佳去處。',tags:['傳統市場','旗山日常','在地早餐'],
+   images:[{url:'https://images.unsplash.com/photo-1534361960057-19f4434e0d4b?w=500&q=70',cap:'旗山第一公有市場'},{url:'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=70',cap:'市場攤位'},{url:'https://images.unsplash.com/photo-1607197109166-e69dc4f5babe?w=500&q=70',cap:'在地早餐文化'}]},
+  {id:'dn1',region:'dn',name:'文元街陽春麵臭豆腐',type:'麵食・小吃',lat:23.675827484535667,lng:120.47896882969506,
+   desc:'隱身文元街巷弄的平民小館，陽春麵湯頭清甜鮮美，臭豆腐外酥內嫩，是斗南在地人口耳相傳的日常好味。',tags:['陽春麵','臭豆腐','在地日常'],
+   images:[{url:'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=500&q=70',cap:'陽春麵臭豆腐'},{url:'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=70',cap:'在地街邊小吃'}]},
+  {id:'dn2',region:'dn',name:'斗南炸饅頭',type:'傳統小吃・麵食',lat:23.6768517630537,lng:120.47880179975586,
+   desc:'現炸饅頭外皮酥脆、內裡鬆軟，沾煉乳或花生粉食用，簡單樸實卻令人難忘，是斗南街頭常見的古早點心。',tags:['炸饅頭','古早味','街頭小食'],
+   images:[{url:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=500&q=70',cap:'炸饅頭'},{url:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500&q=70',cap:'傳統麵食點心'}]},
+  {id:'dn3',region:'dn',name:'斗南米糕甲',type:'傳統小吃',lat:23.677011879024597,lng:120.47923857771663,
+   desc:'以糯米蒸製的筒仔米糕，搭配肉燥、滷蛋與醬汁，米粒飽吸精華，口感軟黏入味，是斗南人熟悉的街坊滋味。',tags:['米糕','筒仔米糕','古早味'],
+   images:[{url:'https://images.unsplash.com/photo-1606914501449-5a96b6ce24ca?w=500&q=70',cap:'斗南米糕'},{url:'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=500&q=70',cap:'傳統米食料理'}]},
+  {id:'dn4',region:'dn',name:'斗南圓環鍋貼',type:'鍋貼・餃類',lat:23.675770800307205,lng:120.48036049203637,
+   desc:'圓環旁老字號鍋貼攤，鍋貼底部煎至金黃酥脆，內餡多汁鮮美，每日限量現做，是斗南早午餐的人氣排隊選項。',tags:['鍋貼','圓環','排隊名攤'],
+   images:[{url:'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=500&q=70',cap:'斗南圓環鍋貼'},{url:'https://images.unsplash.com/photo-1534361960057-19f4434e0d4b?w=500&q=70',cap:'鍋貼現煎'}]},
+  {id:'dn5',region:'dn',name:'路邊雞蛋糕',type:'甜食・街頭小吃',lat:23.670811125713286,lng:120.47394676252901,
+   desc:'現烤雞蛋糕外皮微酥、中間綿軟，蛋香四溢，每顆小巧可愛，是斗南街頭最受孩子與大人歡迎的懷舊甜點。',tags:['雞蛋糕','街頭甜點','懷舊小食'],
+   images:[{url:'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&q=70',cap:'現烤雞蛋糕'},{url:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&q=70',cap:'街頭甜食攤位'}]},
+  {id:'dn6',region:'dn',name:'早一碗豆花 He 來一晚豆花',type:'甜食・豆花',lat:23.67124955758297,lng:120.47809281529427,
+   desc:'以在地黃豆製成的傳統豆花，質地細嫩滑順，可選薑汁或糖水，夏日加冰更是消暑首選，是斗南甜點界的人氣店家。',tags:['豆花','傳統甜點','消暑'],
+   images:[{url:'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&q=70',cap:'傳統豆花'},{url:'https://images.unsplash.com/photo-1519996409144-56c88c9aa612?w=500&q=70',cap:'斗南在地甜食'}]}
 ];
 
 /* ── MAP ── */
 const map = L.map('map', { zoomControl:true, scrollWheelZoom:true, attributionControl:false });
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom:19 }).addTo(map);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom:19 }).addTo(map);
 
 /* Icon factory */
 function makeMarkerSVG(color, active) {
@@ -368,8 +362,8 @@ document.querySelectorAll('.ftab').forEach(btn => {
     btn.classList.add('active');
     activeFilter = btn.dataset.filter;
     renderCards(activeFilter);
-    if (activeFilter==='qs') map.flyTo([22.889,120.478],14,{duration:1});
-    else if (activeFilter==='dn') map.flyTo([23.683,120.475],14,{duration:1});
+    if (activeFilter==='qs') map.flyTo([22.887,120.482],15,{duration:1});
+    else if (activeFilter==='dn') map.flyTo([23.675,120.475],15,{duration:1});
     else map.fitBounds(L.latLngBounds(places.map(p=>[p.lat,p.lng])),{padding:[60,60],animate:true});
   });
 });
