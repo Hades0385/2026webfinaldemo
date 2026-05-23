@@ -16,6 +16,10 @@
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
       :root {
@@ -509,7 +513,6 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        filter: saturate(0.62) brightness(0.78);
       }
       .carousel-caption {
         bottom: 0;
@@ -789,13 +792,11 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        filter: saturate(0.62) brightness(0.78);
-        transition: transform 0.65s ease, filter 0.4s;
+        transition: transform 0.65s ease;
         display: block;
       }
       .lm-hphoto:hover .lm-hphoto-img img {
         transform: scale(1.05);
-        filter: saturate(0.8) brightness(0.88);
       }
       .lm-hphoto-cap {
         padding: 0.85rem 1rem 1rem;
@@ -837,7 +838,6 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        filter: saturate(0.62) brightness(0.78);
       }
       .env-txt {
         padding: 2.2rem;
@@ -1045,6 +1045,7 @@
           padding: 2rem 1.8rem;
         }
       }
+      .content-img { cursor: zoom-in; }
     </style>
   </head>
   <body>
@@ -1840,12 +1841,7 @@
                   <img
                     src="./img/c_05_qs_qwgx.jpg"
                     alt=""
-                    style="
-                      width: 100%;
-                      height: 100%;
-                      object-fit: cover;
-                      filter: saturate(0.62) brightness(0.78);
-                    "
+                    style="width:100%;height:100%;object-fit:cover"
                   />
                   <div class="carousel-caption">
                     <p>旗尾國小</p>
@@ -1855,12 +1851,7 @@
                   <img
                     src="./img/c_05_qs_qwgx1.jpg"
                     alt=""
-                    style="
-                      width: 100%;
-                      height: 100%;
-                      object-fit: cover;
-                      filter: saturate(0.62) brightness(0.78);
-                    "
+                    style="width:100%;height:100%;object-fit:cover"
                   />
                   <div class="carousel-caption">
                     <p>旗尾國小</p>
@@ -1870,12 +1861,7 @@
                   <img
                     src="./img/c_05_qs_qsgz.jpg"
                     alt=""
-                    style="
-                      width: 100%;
-                      height: 100%;
-                      object-fit: cover;
-                      filter: saturate(0.62) brightness(0.78);
-                    "
+                    style="width:100%;height:100%;object-fit:cover"
                   />
                   <div class="carousel-caption">
                     <p>旗山國中</p>
@@ -1885,12 +1871,7 @@
                   <img
                     src="./img/c_05_qs_qmsh.jpg"
                     alt=""
-                    style="
-                      width: 100%;
-                      height: 100%;
-                      object-fit: cover;
-                      filter: saturate(0.62) brightness(0.78);
-                    "
+                    style="width:100%;height:100%;object-fit:cover"
                   />
                   <div class="carousel-caption">
                     <p>旗美高中</p>
@@ -1923,12 +1904,7 @@
                   <img
                     src="./img/c_05_dn_tnps.jpg"
                     alt=""
-                    style="
-                      width: 100%;
-                      height: 100%;
-                      object-fit: cover;
-                      filter: saturate(0.62) brightness(0.78);
-                    "
+                    style="width:100%;height:100%;object-fit:cover"
                   />
                   <div class="carousel-caption">
                     <p>斗南國小</p>
@@ -1938,12 +1914,7 @@
                   <img
                     src="./img/c_05_dn_dnsh.jpg"
                     alt=""
-                    style="
-                      width: 100%;
-                      height: 100%;
-                      object-fit: cover;
-                      filter: saturate(0.62) brightness(0.78);
-                    "
+                    style="width:100%;height:100%;object-fit:cover"
                   />
                   <div class="carousel-caption">
                     <p>斗南高中</p>
@@ -2110,7 +2081,7 @@
     <section class="sec" id="landmark">
       <div class="sec-inner">
         <div class="eyebrow">07 · LANDMARK</div>
-        <div class="sec-title">地方核心場域</div>
+        <div class="sec-title">地方核心場域與其周邊</div>
 
         <!-- 旗山老街 -->
         <div class="landmark-region rv">
@@ -2126,7 +2097,7 @@
               <div class="landmark-intro-name">旗山老街</div>
             </div>
             <div class="landmark-intro-text">
-              旗山老街位於中山路一帶，建於日治時期，以融合巴洛克立面裝飾與閩南建築語彙的街屋建築聞名。街道全長約三百公尺，兩側完整的拱廊式騎樓是南部保存最佳的日治商業街區之一。近年青年返鄉，為百年街區注入新活力。
+              位於高雄市旗山區（中山路），曾因糖業與香蕉產業繁榮。這裡以日治時期的仿巴洛克式洋樓、紅磚建築及石拱圈亭仔腳為最大特色，更曾獲選全台最高人氣老街，更是在地人們，生活不可或缺的一部份。
             </div>
           </div>
           <div class="landmark-hscroll-wrap">
@@ -2134,70 +2105,112 @@
               <div class="lm-hphoto">
                 <div class="lm-hphoto-img">
                   <img
-                    src="https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=600&q=75"
+                    src="./img/c_qs_cv.jpg"
                     alt=""
                   />
                 </div>
                 <div class="lm-hphoto-cap">
                   <div class="lm-hphoto-cap-title">老街全景</div>
                   <div class="lm-hphoto-cap-desc">
-                    中山路一帶保存完整的日治時期巴洛克式騎樓街屋。
+                    道路是熙熙攘攘的人們與攤販，呈現一片熱鬧的氛圍。
                   </div>
                 </div>
               </div>
               <div class="lm-hphoto">
                 <div class="lm-hphoto-img">
                   <img
-                    src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=600&q=75"
+                    src="./img/c_07_qs_lj_jz.jpg"
                     alt=""
                   />
                 </div>
                 <div class="lm-hphoto-cap">
                   <div class="lm-hphoto-cap-title">建築細節</div>
                   <div class="lm-hphoto-cap-desc">
-                    融合東西方美學的立面裝飾，展現台灣日治時代獨特建築語彙。
+                    仿巴洛克式街屋建於 1920 至 1930 年代日治時期。當時因製糖業興盛，地方富紳吳家為配合「市街改正」計畫率先引進歐式風格，極具歷史與建築特色。
                   </div>
                 </div>
               </div>
               <div class="lm-hphoto">
                 <div class="lm-hphoto-img">
                   <img
-                    src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=75"
+                    src="./img/c_07_qs_lj_jz2.jpg"
                     alt=""
                   />
                 </div>
                 <div class="lm-hphoto-cap">
-                  <div class="lm-hphoto-cap-title">在地生活</div>
+                  <div class="lm-hphoto-cap-title">建築細節</div>
                   <div class="lm-hphoto-cap-desc">
-                    芭蕉冰、香蕉蛋糕沿街飄香，老街是旗山日常生活的舞台。
+                    仿巴洛克式街屋。
                   </div>
                 </div>
               </div>
               <div class="lm-hphoto">
                 <div class="lm-hphoto-img">
                   <img
-                    src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600&q=75"
+                    src="./img/c_07_qs_lj_ren.jpg"
                     alt=""
                   />
                 </div>
                 <div class="lm-hphoto-cap">
-                  <div class="lm-hphoto-cap-title">香蕉冰品</div>
+                  <div class="lm-hphoto-cap-title">老街街景</div>
                   <div class="lm-hphoto-cap-desc">
-                    以在地香蕉製成的芭蕉冰是旗山最具代表性的觀光美食。
+                    攤販與人群
                   </div>
                 </div>
               </div>
               <div class="lm-hphoto">
                 <div class="lm-hphoto-img">
                   <img
-                    src="https://images.unsplash.com/photo-1585032226651-759b368d7246?w=600&q=75"
+                    src="./img/c_07_qs_lj_ren2.jpg"
                     alt=""
                   />
                 </div>
                 <div class="lm-hphoto-cap">
-                  <div class="lm-hphoto-cap-title">傳統小吃</div>
+                  <div class="lm-hphoto-cap-title">老街街景</div>
                   <div class="lm-hphoto-cap-desc">
-                    老街周邊聚集各式傳統小吃，旗山肉圓、米糕筒深受在地人喜愛。
+                    攤販與人群
+                  </div>
+                </div>
+              </div>
+              <div class="lm-hphoto">
+                <div class="lm-hphoto-img">
+                  <img
+                    src="./img/c_07_qs_qsst.jpg"
+                    alt=""
+                  />
+                </div>
+                <div class="lm-hphoto-cap">
+                  <div class="lm-hphoto-cap-title">旗山車站</div>
+                  <div class="lm-hphoto-cap-desc">
+                    鐵路已停駛，現已轉型為融合糖、香蕉與火車主題的展示館，內部保留了老火車頭及珍貴的鐵軌歷史，是旗山老街的著名地標。
+                  </div>
+                </div>
+              </div>
+              <div class="lm-hphoto">
+                <div class="lm-hphoto-img">
+                  <img
+                    src="./img/c_07_qs_thg.jpg"
+                    alt=""
+                  />
+                </div>
+                <div class="lm-hphoto-cap">
+                  <div class="lm-hphoto-cap-title">旗山天后宮</div>
+                  <div class="lm-hphoto-cap-desc">
+                    鄰近老街，是本地開莊的市集、信仰、精神等活動中心，亦是凝聚社區意識與聚落發展的樞紐
+                  </div>
+                </div>
+              </div>
+              <div class="lm-hphoto">
+                <div class="lm-hphoto-img">
+                  <img
+                    src="./img/c_07_qs_km.jpg"
+                    alt=""
+                  />
+                </div>
+                <div class="lm-hphoto-cap">
+                  <div class="lm-hphoto-cap-title">旗山孔廟</div>
+                  <div class="lm-hphoto-cap-desc">
+                    為臺灣、也是全東南亞佔地面積最大的孔子廟
                   </div>
                 </div>
               </div>
@@ -2379,7 +2392,7 @@
                     alt=""
                   />
                   <div class="carousel-caption">
-                    <p>自然風光</p>
+                    <p>旗尾山第一登山口</p>
                   </div>
                 </div>
                 <div class="carousel-item">
@@ -2388,7 +2401,7 @@
                     alt=""
                   />
                   <div class="carousel-caption">
-                    <p>旗山糖廠</p>
+                    <p>旗山河濱公園</p>
                   </div>
                 </div>
                 <div class="carousel-item">
@@ -2397,7 +2410,16 @@
                     alt=""
                   />
                   <div class="carousel-caption">
-                    <p>旗山河堤</p>
+                    <p>旗山溪</p>
+                  </div>
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="./img/c_08_qs_04.jpg"
+                    alt=""
+                  />
+                  <div class="carousel-caption">
+                    <p>旗山河濱公園</p>
                   </div>
                 </div>
               </div>
@@ -2433,11 +2455,12 @@
             </div>
             <div class="env-sub">山水交織的生態景觀</div>
             <div class="env-desc">
-              旗山地處山地與平原過渡帶，旗山溪蜿蜒流過市區，形成豐富的河岸生態廊道。旗尾山步道沿途視野開闊，可俯瞰市區全景。糖廠舊址改建的旗山生態公園，提供市民親近自然的都市綠地空間。
+              旗山區擁有豐富的自然景觀，其中以旗尾山與旗山溪最具代表性。旗尾山位於高雄市旗山區，海拔318公尺，為台灣小百岳之一，山勢優美且視野遼闊，是當地著名的自然地標。流經旗山的旗山溪，原名楠梓仙溪，在卡那卡那富語稱為 Namasia，近年更名為旗山溪，也是台灣南部高屏溪最主要的支流，孕育了旗山地區的自然生態與人文發展。
             </div>
             <div class="tags">
               <span class="tag">山景</span
-              ><span class="tag">糖廠</span>
+              ><span class="tag">河濱公園</span>
+              <span class="tag">旗山溪</span>
             </div>
           </div>
         </div>
@@ -2473,6 +2496,12 @@
                     <p>石牛溪河堤</p>
                   </div>
                 </div>
+                <div class="carousel-item">
+                  <img src="./img/c_08_dn_05.jpg" alt="" />
+                  <div class="carousel-caption">
+                    <p>EMU800型列車</p>
+                  </div>
+                </div>
               </div>
               <button
                 class="carousel-control-prev"
@@ -2506,9 +2535,7 @@
             </div>
             <div class="env-sub">嘉南平原農田地景</div>
             <div class="env-desc">
-              廣袤農地承接四季色彩，鐵道與聚落交錯成生活的紋理。
-              這座小鎮將記憶種進土地，也讓環境成為人們與故鄉對話的方式。
-              每一畝田、每一道天光，都述說著斗南樸實而深刻的生命風景。
+              斗南隨處可見廣袤的稻田，平坦的綠意鋪滿大地，不論是陰是晴都別有一番風味，山巒在雲霧間若隱若現，展現出平原城鎮獨有的遼闊視野，天氣晴朗時可遠眺層雲繚繞的中央山脈與玉山山脈景致。
             </div>
             <div class="tags">
               <span class="tag">嘉南平原</span><span class="tag">農田</span
@@ -2833,6 +2860,22 @@
         { rootMargin: `-${NAV_OFFSET}px 0px -52% 0px` }
       );
       document.querySelectorAll("section[id]").forEach((s) => snObs.observe(s));
+
+      /* ── FANCYBOX ── */
+      const CONTENT_IMG_SEL = [
+        ".transport-car-col img",
+        ".env-carousel img",
+        ".lm-hphoto-img img",
+        ".edu-carousel-panel img",
+      ].join(",");
+      document.querySelectorAll(CONTENT_IMG_SEL).forEach((img) => {
+        img.classList.add("content-img");
+        img.addEventListener("click", (e) => {
+          e.stopPropagation();
+          Fancybox.show([{ src: img.src, type: "image" }]);
+        });
+      });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
   </body>
 </html>
