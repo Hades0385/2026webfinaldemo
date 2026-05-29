@@ -1046,6 +1046,79 @@
         }
       }
       .content-img { cursor: zoom-in; }
+
+      /* ── COMPARISON SUMMARY ── */
+      .cmp-summary {
+        margin-top: 2.2rem;
+        border: 1px solid var(--line);
+      }
+      .cmp-summary-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 0.85rem 1.4rem;
+        background: var(--bg2);
+        border: none;
+        border-bottom: 1px solid transparent;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .cmp-summary-btn:hover { background: var(--bg3); }
+      .cmp-summary-label {
+        font-size: 0.67rem;
+        letter-spacing: 0.38em;
+        color: var(--muted);
+        flex: 1;
+        text-align: left;
+      }
+      .cmp-summary-hint {
+        font-size: 0.63rem;
+        letter-spacing: 0.1em;
+        color: rgba(255, 255, 255, 0.15);
+      }
+      .cmp-summary-arrow {
+        font-size: 0.68rem;
+        color: var(--muted);
+        transition: transform 0.35s ease;
+        flex-shrink: 0;
+      }
+      .cmp-summary.open .cmp-summary-btn { border-bottom-color: var(--line); }
+      .cmp-summary.open .cmp-summary-arrow { transform: rotate(180deg); }
+      .cmp-summary-body {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.45s ease;
+      }
+      .cmp-summary.open .cmp-summary-body { max-height: 1200px; }
+      .cmp-summary-inner { padding: 0 1.8rem; }
+      .cmp-insight {
+        display: flex;
+        gap: 0.9rem;
+        align-items: flex-start;
+        padding: 0.9rem 0;
+        font-size: 0.8rem;
+        line-height: 1.82;
+        color: rgba(216, 211, 200, 0.72);
+        border-bottom: 1px solid var(--line);
+      }
+      .cmp-insight:last-child { border-bottom: none; }
+      .cmp-insight-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--muted);
+        flex-shrink: 0;
+        margin-top: 0.65rem;
+      }
+      .cmp-qs-val {
+        color: var(--qs-dim);
+        font-family: "Playfair Display", serif;
+      }
+      .cmp-dn-val {
+        color: var(--dn-dim);
+        font-family: "Playfair Display", serif;
+      }
     </style>
   </head>
   <body>
@@ -1168,6 +1241,29 @@
             <div class="dr">
               <span class="dk">代表地標</span
               ><span class="dv dn">斗南車站</span>
+            </div>
+          </div>
+        </div>
+        <div class="cmp-summary rv">
+          <button class="cmp-summary-btn">
+            <span class="cmp-summary-label">比較統整</span>
+            <span class="cmp-summary-hint">點擊展開</span>
+            <span class="cmp-summary-arrow">▾</span>
+          </button>
+          <div class="cmp-summary-body">
+            <div class="cmp-summary-inner">
+              <div class="cmp-insight">
+                <div class="cmp-insight-dot"></div>
+                <span>面積與密度的反差：旗山（<span class="cmp-qs-val">94.61 km²</span>）面積近斗南（<span class="cmp-dn-val">48.12 km²</span>）兩倍，人口卻更少（<span class="cmp-qs-val">約 3.3 萬</span> vs <span class="cmp-dn-val">約 4.3 萬</span>），斗南人口密度（<span class="cmp-dn-val">899 人/km²</span>）因此遠高於旗山（<span class="cmp-qs-val">351 人/km²</span>），差距近 2.6 倍。</span>
+              </div>
+              <div class="cmp-insight">
+                <div class="cmp-insight-dot"></div>
+                <span>行政層級不同，資源分配有別：旗山為<span class="cmp-qs-val">高雄市直轄市轄區</span>，直接受高雄市政府管轄；斗南則為<span class="cmp-dn-val">雲林縣縣轄鎮</span>，行政資源取得方式與量度均有所差異。</span>
+              </div>
+              <div class="cmp-insight">
+                <div class="cmp-insight-dot"></div>
+                <span>地形塑造農業型態：旗山海拔約 87 公尺，孕育熱帶果樹（<span class="cmp-qs-val">香蕉、荔枝、鳳梨</span>）；斗南的嘉南平原地勢平坦，海拔約 34 公尺，以<span class="cmp-dn-val">稻米、馬鈴薯、烏殼綠竹筍</span>等糧食與根莖作物為大宗。</span>
+              </div>
             </div>
           </div>
         </div>
@@ -1470,6 +1566,25 @@
             </div>
           </div>
         </div>
+        <div class="cmp-summary rv">
+          <button class="cmp-summary-btn">
+            <span class="cmp-summary-label">比較統整</span>
+            <span class="cmp-summary-hint">點擊展開</span>
+            <span class="cmp-summary-arrow">▾</span>
+          </button>
+          <div class="cmp-summary-body">
+            <div class="cmp-summary-inner">
+              <div class="cmp-insight">
+                <div class="cmp-insight-dot"></div>
+                <span>兩地皆有逾三百年史籍記載：旗山最早見於<span class="cmp-qs-val">康熙年間（1662–1722）</span>《台灣府誌》，斗南則首見於<span class="cmp-dn-val">康熙49年（1710）</span>《重修臺灣府志》，開發歷史幾乎同期展開，皆是台灣西南部早期漢人拓墾的重要聚落。</span>
+              </div>
+              <div class="cmp-insight">
+                <div class="cmp-insight-dot"></div>
+                <span>日治1920年兩地同步更名，旗山因舊名不雅<span class="cmp-qs-val">改稱「旗山街」</span>，斗南由<span class="cmp-dn-val">「他里霧」改為「斗南庄」（1940年升格為街）</span>。戰後兩地於1946年皆設「鎮」，但2010年旗山隨高雄縣市合併升格為直轄市「區」，斗南自1950年起則維持雲林縣轄「鎮」，此行政格局差異深遠影響了兩地的公共資源與地方建設。</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1499,6 +1614,29 @@
             <div class="chart-label">老化指數與扶養比</div>
             <canvas id="agingChart" height="110"></canvas>
             <div class="chart-note">※ 老化指數 = 65歲以上 ÷ 0–14歲 × 100</div>
+          </div>
+        </div>
+        <div class="cmp-summary rv">
+          <button class="cmp-summary-btn">
+            <span class="cmp-summary-label">比較統整</span>
+            <span class="cmp-summary-hint">點擊展開</span>
+            <span class="cmp-summary-arrow">▾</span>
+          </button>
+          <div class="cmp-summary-body">
+            <div class="cmp-summary-inner">
+              <div class="cmp-insight">
+                <div class="cmp-insight-dot"></div>
+                <span>兩地人口皆持續下滑，旗山降幅更深：民104至114年間，旗山減少約<span class="cmp-qs-val">11.6%</span>（37,770 → 33,370人），斗南則減少約<span class="cmp-dn-val">4.9%</span>（45,590 → 43,320人），差距反映旗山人口外流壓力更為顯著。</span>
+              </div>
+              <div class="cmp-insight">
+                <div class="cmp-insight-dot"></div>
+                <span>旗山老齡化程度遠高於斗南：旗山老化指數<span class="cmp-qs-val">328.4</span>（65歲以上佔比29%），斗南為<span class="cmp-dn-val">207.6</span>（65歲以上佔比22%），兩者差距逾120個指數點，旗山超高齡社會特徵已十分明顯。</span>
+              </div>
+              <div class="cmp-insight">
+                <div class="cmp-insight-dot"></div>
+                <span>斗南勞動力結構較健全：斗南扶養比（<span class="cmp-dn-val">48%</span>）低於旗山（<span class="cmp-qs-val">61%</span>），意味著斗南每百名勞動年齡人口所需撫養的老幼人口較少。</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1669,6 +1807,25 @@
                 <td class="t-val-dn">至嘉義市約30分鐘 ／ 台中約60分鐘</td>
               </tr>
             </table>
+          </div>
+        </div>
+        <div class="cmp-summary rv">
+          <button class="cmp-summary-btn">
+            <span class="cmp-summary-label">比較統整</span>
+            <span class="cmp-summary-hint">點擊展開</span>
+            <span class="cmp-summary-arrow">▾</span>
+          </button>
+          <div class="cmp-summary-body">
+            <div class="cmp-summary-inner">
+              <div class="cmp-insight">
+                <div class="cmp-insight-dot"></div>
+                <span>鐵路有無是最關鍵差距：斗南境內有<span class="cmp-dn-val">縱貫線鐵路（斗南站、石龜站）</span>，提供穩定的南北大眾運輸；旗山境內<span class="cmp-qs-val">無鐵路服務</span>，在交通便利性上明顯受限。</span>
+              </div>
+              <div class="cmp-insight">
+                <div class="cmp-insight-dot"></div>
+                <span>國道各有依托：旗山透過<span class="cmp-qs-val">國道10號</span>約35分鐘可達高雄市區；斗南藉<span class="cmp-dn-val">國道1號及台78快速道路</span>約30分鐘可達嘉義市，兩地對外公路聯通均屬便利。</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1941,6 +2098,25 @@
             </div>
           </div>
         </div>
+        <div class="cmp-summary rv">
+          <button class="cmp-summary-btn">
+            <span class="cmp-summary-label">比較統整</span>
+            <span class="cmp-summary-hint">點擊展開</span>
+            <span class="cmp-summary-arrow">▾</span>
+          </button>
+          <div class="cmp-summary-body">
+            <div class="cmp-summary-inner">
+              <div class="cmp-insight">
+                <div class="cmp-insight-dot"></div>
+                <span>兩地在國小與中等教育資源上面臨不同格局。旗山與斗南皆擁有 6 所國小，基本教育涵蓋面相當；然而在中學部分，旗山設有<span class="cmp-qs-val"> 3 </span>所國中，略多於斗南的<span class="cmp-dn-val"> 2 </span>所國中，為周邊生活圈提供更為分散且在地的國民義務教育支持。</span>
+              </div>
+              <div class="cmp-insight">
+                <div class="cmp-insight-dot"></div>
+                <span>在高級中等教育上，兩地均具備完整的大學前培育體制。旗山與斗南各自擁有一所高中與一所高職（旗山為<span class="cmp-qs-val">旗美高中、旗山農工</span>；斗南為<span class="cmp-dn-val">斗南高中、大德工商</span>），城鎮皆具備獨立留住地方青少年的教育機能。</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -2071,6 +2247,29 @@
               <div class="living-item">
                 <div class="living-dot"></div>
                 斗南圖書館
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cmp-summary rv">
+          <button class="cmp-summary-btn">
+            <span class="cmp-summary-label">比較統整</span>
+            <span class="cmp-summary-hint">點擊展開</span>
+            <span class="cmp-summary-arrow">▾</span>
+          </button>
+          <div class="cmp-summary-body">
+            <div class="cmp-summary-inner">
+              <div class="cmp-insight">
+                <div class="cmp-insight-dot"></div>
+                <span>醫療資源旗山較完善：旗山設有<span class="cmp-qs-val">衛生福利部旗山醫院</span>（部立醫院），提供區域型醫療服務；斗南雖有<span class="cmp-dn-val">福安醫院</span>，急重症仍需20分鐘車程外送至斗六成大或台大雲林分院，緊急醫療的即時性相對不足。</span>
+              </div>
+              <div class="cmp-insight">
+                <div class="cmp-insight-dot"></div>
+                <span>購物生態各有風貌：旗山以<span class="cmp-qs-val">老街商圈與農會超市</span>結合觀光與日常採購；斗南有<span class="cmp-dn-val">大全聯連鎖超市、黃昏市場與週六夜市</span>，日常購物選項更為多元且兼顧民生需求。</span>
+              </div>
+              <div class="cmp-insight">
+                <div class="cmp-insight-dot"></div>
+                <span>基層公共服務均完整：兩地皆具備<span style="color:rgba(216,211,200,0.88)">公所、農會、郵局、圖書館</span>等基礎設施，民眾日常行政需求可在地解決，展現小鎮型行政體系的基本完整性。</span>
               </div>
             </div>
           </div>
@@ -2371,6 +2570,25 @@
             </div>
           </div>
         </div>
+        <div class="cmp-summary rv">
+          <button class="cmp-summary-btn">
+            <span class="cmp-summary-label">比較統整</span>
+            <span class="cmp-summary-hint">點擊展開</span>
+            <span class="cmp-summary-arrow">▾</span>
+          </button>
+          <div class="cmp-summary-body">
+            <div class="cmp-summary-inner">
+              <div class="cmp-insight">
+                <div class="cmp-insight-dot"></div>
+                <span>場域功能定位不同：<span class="cmp-qs-val">旗山老街</span>以觀光為主軸，日治巴洛克建築群吸引大量外來人潮，假日車水馬龍；<span class="cmp-dn-val">斗南車站</span>同時承擔「日常通勤樞紐」與「歷史建築保存」雙重角色，兩者場域屬性截然不同。</span>
+              </div>
+              <div class="cmp-insight">
+                <div class="cmp-insight-dot"></div>
+                <span>歷史建築皆具日治價值：旗山老街為<span class="cmp-qs-val">1920–1930年代仿巴洛克式磚造街屋群</span>；斗南舊站房則是<span class="cmp-dn-val">1945年改建的大斜屋頂磚造建築</span>，被稱為「台灣日治時期最後改建的火車站」，皆是無可取代的台灣近代建築遺產。</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -2541,6 +2759,25 @@
             <div class="tags">
               <span class="tag">嘉南平原</span><span class="tag">農田</span
               ><span class="tag">悠閒</span><span class="tag">鐵道</span>
+            </div>
+          </div>
+        </div>
+        <div class="cmp-summary rv">
+          <button class="cmp-summary-btn">
+            <span class="cmp-summary-label">比較統整</span>
+            <span class="cmp-summary-hint">點擊展開</span>
+            <span class="cmp-summary-arrow">▾</span>
+          </button>
+          <div class="cmp-summary-body">
+            <div class="cmp-summary-inner">
+              <div class="cmp-insight">
+                <div class="cmp-insight-dot"></div>
+                <span>地形景觀截然對比：旗山屬<span class="cmp-qs-val">山谷盆地地形</span>，旗尾山（318m，台灣小百岳）與旗山溪構成山水交織的自然景觀；斗南屬<span class="cmp-dn-val">嘉南平原</span>，農田廣袤平坦，晴天可遠眺中央山脈，展現平原城鎮特有的遼闊視野。</span>
+              </div>
+              <div class="cmp-insight">
+                <div class="cmp-insight-dot"></div>
+                <span>休閒生態取向不同：旗山以<span class="cmp-qs-val">旗尾山登山步道與旗山河濱公園</span>為主要自然休閒場所，垂直地形帶來豐富的戶外體驗；斗南則以<span class="cmp-dn-val">農村田野景觀與鐵道沿線視野</span>為特色，展現截然不同的慢活氛圍。</span>
+              </div>
             </div>
           </div>
         </div>
@@ -2875,6 +3112,13 @@
         img.addEventListener("click", (e) => {
           e.stopPropagation();
           Fancybox.show([{ src: img.src, type: "image" }]);
+        });
+      });
+
+      /* ── COMPARISON SUMMARY TOGGLE ── */
+      document.querySelectorAll(".cmp-summary-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          btn.closest(".cmp-summary").classList.toggle("open");
         });
       });
     </script>
