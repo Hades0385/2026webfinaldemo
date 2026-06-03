@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>設計概念｜山·田 SHANTIAN</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600&family=Noto+Sans+TC:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <style>
+    /* ── TOKENS ── */
+    :root{
+      --bg:#0f0e0d;--bg2:#161513;--bg3:#1c1b19;
+      --text:#d8d3c8;--muted:#6a6760;--line:#252320;
+      --qs:#996040;--qs-dim:#c07850;
+      --dn:#4d6b38;--dn-dim:#6a9450;
+      --white:rgba(255,255,255,.88);
+      --gold:#c8a85a;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;font-size:16px}
+    body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.8}
+
+    /* ── SHARED ── */
+    .sec{border-top:1px solid var(--line);padding:7rem 0}
+    .sec.bg2{background:var(--bg2)}
+    .sec-inner{max-width:1100px;margin:0 auto;padding:0 4rem}
+    .sec-num{font-family:'Playfair Display',serif;font-size:5rem;font-weight:400;color:rgba(255,255,255,.04);line-height:1;position:absolute;top:-.8rem;left:4rem;pointer-events:none;user-select:none}
+    .sec-head{position:relative;margin-bottom:3.5rem}
+    .sec-eyebrow{font-size:.65rem;letter-spacing:.55em;color:var(--muted);margin-bottom:.6rem}
+    .sec-title{font-family:'Noto Serif TC',serif;font-size:clamp(1.4rem,2.2vw,2rem);font-weight:300;letter-spacing:.06em;color:var(--white)}
+
+    /* Reveal */
+    .rv{opacity:0;transform:translateY(18px);transition:opacity .75s ease,transform .75s ease}
+    .rv.on{opacity:1;transform:translateY(0)}
+    .rv2{opacity:0;transform:translateY(18px);transition:opacity .75s .15s ease,transform .75s .15s ease}
+    .rv2.on{opacity:1;transform:translateY(0)}
+    .rv3{opacity:0;transform:translateY(18px);transition:opacity .75s .3s ease,transform .75s .3s ease}
+    .rv3.on{opacity:1;transform:translateY(0)}
+
+    /* ══════════════════ HERO ══════════════════ */
+    .hero{
+      height:100vh;min-height:600px;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      text-align:center;
+      position:relative;
+      background:var(--bg);
+      overflow:hidden;
+    }
+    /* subtle grid pattern */
+    .hero::before{
+      content:'';position:absolute;inset:0;
+      background-image:
+        linear-gradient(var(--line) 1px,transparent 1px),
+        linear-gradient(90deg,var(--line) 1px,transparent 1px);
+      background-size:60px 60px;
+      opacity:.35;
+    }
+    .hero::after{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse 60% 60% at 50% 50%, transparent 40%, var(--bg) 100%);
+    }
+    .hero-content{position:relative;z-index:2;padding:2rem}
+    .hero-badge{
+      display:inline-flex;align-items:center;gap:.6rem;
+      font-size:.68rem;letter-spacing:.4em;color:var(--muted);
+      border:1px solid var(--line);padding:.4rem 1.2rem;
+      margin-bottom:2.5rem;
+      animation:fadeUp .9s .2s cubic-bezier(.16,1,.3,1) both;
+    }
+    .hero-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--qs)}
+    .hero-year{
+      font-family:'Playfair Display',serif;
+      font-size:clamp(5rem,12vw,9rem);
+      font-weight:400;
+      letter-spacing:-.02em;
+      color:rgba(255,255,255,.06);
+      line-height:1;
+      position:absolute;
+      top:50%;left:50%;
+      transform:translate(-50%,-50%);
+      pointer-events:none;user-select:none;
+      white-space:nowrap;
+      z-index:1;
+    }
+    .hero-title{
+      font-family:'Noto Serif TC',serif;
+      font-size:clamp(3rem,8vw,6rem);
+      font-weight:300;
+      letter-spacing:.22em;
+      color:var(--white);
+      line-height:1.1;
+      margin-bottom:.6rem;
+      animation:fadeUp .9s .4s cubic-bezier(.16,1,.3,1) both;
+    }
+    .hero-title .dot{color:var(--dn-dim)}
+    .hero-en{
+      font-family:'Playfair Display',serif;
+      font-size:clamp(.8rem,1.4vw,1rem);
+      letter-spacing:.55em;
+      color:rgba(255,255,255,.28);
+      margin-bottom:2rem;
+      animation:fadeUp .9s .5s cubic-bezier(.16,1,.3,1) both;
+    }
+    .hero-sub{
+      font-size:clamp(.78rem,1.2vw,.92rem);
+      letter-spacing:.15em;
+      color:var(--muted);
+      margin-bottom:.6rem;
+      animation:fadeUp .9s .6s cubic-bezier(.16,1,.3,1) both;
+    }
+    .hero-desc{
+      font-family:'Noto Serif TC',serif;
+      font-size:clamp(.88rem,1.4vw,1.05rem);
+      font-weight:300;
+      letter-spacing:.06em;
+      color:rgba(255,255,255,.45);
+      animation:fadeUp .9s .7s cubic-bezier(.16,1,.3,1) both;
+    }
+    .hero-scroll{
+      position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);
+      font-size:.62rem;letter-spacing:.45em;color:var(--muted);
+      display:flex;flex-direction:column;align-items:center;gap:.5rem;
+      animation:fadeUp 1.2s 1.2s ease both;
+    }
+    .hero-scroll-line{width:1px;height:36px;background:linear-gradient(var(--muted),transparent);animation:scrollLine 1.8s ease-in-out infinite}
+    @keyframes scrollLine{0%,100%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ══════════════════ 01 OVERVIEW ══════════════════ */
+    .overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line)}
+    .overview-col{background:var(--bg);padding:2.5rem}
+    .overview-col-label{font-size:.64rem;letter-spacing:.45em;color:var(--muted);margin-bottom:1rem}
+    .overview-col-title{font-family:'Noto Serif TC',serif;font-size:1.4rem;font-weight:300;letter-spacing:.08em;margin-bottom:.8rem;color:var(--white)}
+    .overview-col-body{font-size:.86rem;line-height:1.95;color:var(--muted)}
+    .region-pill{display:inline-block;font-size:.68rem;letter-spacing:.18em;padding:.2rem .75rem;border-radius:99px;margin-top:.8rem;margin-right:.4rem}
+    .pill-qs{background:rgba(153,96,64,.18);color:var(--qs-dim);border:1px solid rgba(153,96,64,.3)}
+    .pill-dn{background:rgba(77,107,56,.18);color:var(--dn-dim);border:1px solid rgba(77,107,56,.3)}
+
+    /* ══════════════════ 02 DESIGN CONCEPT ══════════════════ */
+    .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--line);margin-bottom:3rem}
+    .pillar{background:var(--bg);padding:2.5rem 2rem;position:relative;overflow:hidden}
+    .pillar::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+    .pillar:nth-child(1)::before{background:var(--qs)}
+    .pillar:nth-child(2)::before{background:var(--dn)}
+    .pillar:nth-child(3)::before{background:var(--gold)}
+    .pillar-num{font-family:'Playfair Display',serif;font-size:3rem;font-weight:400;color:rgba(255,255,255,.06);line-height:1;margin-bottom:1.2rem}
+    .pillar-title{font-family:'Noto Serif TC',serif;font-size:1.1rem;font-weight:400;letter-spacing:.08em;margin-bottom:.8rem;color:var(--white)}
+    .pillar-body{font-size:.82rem;line-height:1.95;color:var(--muted)}
+
+    .concept-quote{
+      border-left:2px solid var(--qs);
+      padding:1.5rem 2rem;
+      font-family:'Noto Serif TC',serif;
+      font-size:1.05rem;font-weight:300;
+      letter-spacing:.06em;line-height:1.9;
+      color:rgba(255,255,255,.65);
+      background:var(--bg3);
+      margin-top:2rem;
+    }
+
+    /* ══════════════════ 03 DESIGN SYSTEM ══════════════════ */
+    .ds-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem}
+
+    /* Colors */
+    .color-swatches{display:flex;flex-direction:column;gap:6px}
+    .swatch{display:flex;align-items:center;gap:.8rem;cursor:default}
+    .swatch-block{width:36px;height:36px;border-radius:2px;flex-shrink:0}
+    .swatch-info{display:flex;flex-direction:column;gap:2px}
+    .swatch-name{font-size:.76rem;color:var(--text)}
+    .swatch-hex{font-family:'Playfair Display',serif;font-size:.68rem;color:var(--muted)}
+
+    /* Typography */
+    .type-row{padding:.8rem 0;border-bottom:1px solid var(--line)}
+    .type-row:last-child{border-bottom:none}
+    .type-specimen{font-size:clamp(1.2rem,2vw,1.5rem);line-height:1.2;color:var(--white);margin-bottom:.2rem}
+    .type-meta{font-size:.66rem;letter-spacing:.2em;color:var(--muted)}
+
+    /* Components */
+    .comp-row{display:flex;flex-direction:column;gap:1rem}
+    .comp-item{padding:.6rem .8rem;border:1px solid var(--line);font-size:.8rem;background:var(--bg);display:inline-flex;align-items:center;gap:.5rem}
+    .comp-dot{width:6px;height:6px;border-radius:50%}
+    .ds-label{font-size:.65rem;letter-spacing:.38em;color:var(--muted);margin-bottom:1.2rem}
+
+    /* ══════════════════ 04 SITE MAP ══════════════════ */
+    .sitemap{display:flex;flex-direction:column;align-items:center;gap:0}
+    .sitemap-root{
+      padding:.9rem 2.5rem;
+      background:var(--bg3);border:1px solid rgba(255,255,255,.1);
+      font-family:'Noto Serif TC',serif;font-size:1rem;font-weight:300;letter-spacing:.15em;color:var(--white);
+      position:relative;
+    }
+    .sitemap-connector-v{width:1px;height:2.5rem;background:var(--line);margin:0 auto}
+    .sitemap-connector-h{
+      display:flex;align-items:center;justify-content:center;
+      position:relative;width:100%;
+    }
+    .sitemap-connector-h::before{
+      content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:var(--line);
+    }
+    .sitemap-nodes{
+      display:grid;grid-template-columns:repeat(5,1fr);gap:2px;background:var(--line);width:100%;margin-top:2.5rem;
+    }
+    .sitemap-node{
+      background:var(--bg);padding:1.2rem 1rem;text-align:center;text-decoration:none;
+      transition:background .2s;cursor:pointer;
+    }
+    .sitemap-node:hover{background:var(--bg3)}
+    .sitemap-node-name{font-family:'Noto Serif TC',serif;font-size:.88rem;font-weight:400;letter-spacing:.06em;color:var(--white);margin-bottom:.2rem}
+    .sitemap-node-en{font-size:.63rem;letter-spacing:.2em;color:var(--muted)}
+    .sitemap-node-new{
+      display:inline-block;font-size:.55rem;letter-spacing:.15em;
+      padding:.1rem .4rem;background:rgba(153,96,64,.2);color:var(--qs-dim);
+      border:1px solid rgba(153,96,64,.25);border-radius:2px;margin-top:.3rem;
+    }
+
+    /* ══════════════════ 05 DEMO ══════════════════ */
+    .demo-tabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:2.5rem;overflow-x:auto;scrollbar-width:none}
+    .demo-tabs::-webkit-scrollbar{display:none}
+    .demo-tab{
+      font-size:.75rem;letter-spacing:.18em;color:var(--muted);
+      padding:.6rem 1.2rem;border-bottom:2px solid transparent;
+      cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s;
+      background:none;border-top:none;border-left:none;border-right:none;
+      font-family:'Noto Sans TC',sans-serif;
+    }
+    .demo-tab:hover{color:var(--text)}
+    .demo-tab.active{color:var(--white);border-bottom-color:var(--qs)}
+
+    .demo-pane{display:none}
+    .demo-pane.active{display:flex;gap:2rem;align-items:flex-start}
+
+    .demo-browser{
+      width:420px;min-width:420px;
+      background:#0a0908;
+      border:1px solid var(--line);
+      border-radius:4px;
+      overflow:hidden;
+      box-shadow:0 20px 60px rgba(0,0,0,.5);
+      flex-shrink:0;
+    }
+    .browser-chrome{
+      height:38px;background:#141312;
+      display:flex;align-items:center;padding:0 1rem;gap:.6rem;
+      border-bottom:1px solid var(--line);
+    }
+    .chrome-dot{width:8px;height:8px;border-radius:50%;background:#2a2826}
+    .chrome-url{
+      flex:1;background:var(--bg);border-radius:3px;height:21px;
+      display:flex;align-items:center;padding:0 .7rem;
+      font-size:.62rem;letter-spacing:.04em;color:var(--muted);
+      overflow:hidden;white-space:nowrap;
+    }
+    .browser-viewport{height:270px;overflow:hidden;position:relative}
+    .browser-viewport iframe{
+      width:1280px;height:900px;
+      transform:scale(0.328);
+      transform-origin:top left;
+      border:none;
+      pointer-events:none;
+    }
+    /* placeholder while iframe loads */
+    .browser-placeholder{
+      position:absolute;inset:0;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:.6rem;background:var(--bg2);
+    }
+    .bp-label{font-size:.68rem;letter-spacing:.3em;color:var(--muted)}
+
+    .demo-info{flex:1;min-width:0}
+    .demo-info-tag{font-size:.64rem;letter-spacing:.4em;color:var(--muted);margin-bottom:.6rem}
+    .demo-info-title{font-family:'Noto Serif TC',serif;font-size:1.4rem;font-weight:300;letter-spacing:.08em;color:var(--white);margin-bottom:1rem}
+    .demo-info-desc{font-size:.84rem;line-height:1.95;color:var(--muted);margin-bottom:1.5rem}
+    .demo-features{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.8rem}
+    .demo-feature{display:flex;align-items:center;gap:.6rem;font-size:.8rem;color:rgba(216,211,200,.7)}
+    .demo-feature::before{content:'—';color:var(--line)}
+    .demo-open{
+      display:inline-flex;align-items:center;gap:.5rem;
+      font-size:.72rem;letter-spacing:.22em;
+      color:rgba(255,255,255,.45);text-decoration:none;
+      border:1px solid var(--line);padding:.5rem 1.2rem;
+      transition:color .25s,border-color .25s;
+    }
+    .demo-open:hover{color:var(--white);border-color:rgba(255,255,255,.25)}
+
+    /* ══════════════════ 06 TECH STACK ══════════════════ */
+    .tools-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--line)}
+    .tool-card{
+      background:var(--bg);padding:1.8rem 1.6rem;
+      transition:background .2s;
+    }
+    .tool-card:hover{background:var(--bg3)}
+    .tool-icon{font-size:1.5rem;margin-bottom:.8rem;display:block;line-height:1;color:var(--muted)}
+    .sitemap-node-icon{font-size:1.3rem;margin-bottom:.4rem;line-height:1;color:var(--muted)}
+    .tool-name{font-family:'Noto Serif TC',serif;font-size:.95rem;font-weight:400;letter-spacing:.04em;color:var(--white);margin-bottom:.3rem}
+    .tool-role{font-size:.72rem;letter-spacing:.12em;color:var(--muted);margin-bottom:.6rem}
+    .tool-desc{font-size:.77rem;line-height:1.75;color:rgba(216,211,200,.55)}
+    .tool-card.highlight{border-top:2px solid var(--qs)}
+
+    /* ══════════════════ 07 AI COLLABORATION ══════════════════ */
+    .ai-hero{
+      background:var(--bg3);border:1px solid var(--line);
+      padding:3rem;margin-bottom:2.5rem;
+      display:grid;grid-template-columns:1fr 1fr;gap:3rem;
+      align-items:center;
+    }
+    .ai-brand{
+      font-family:'Playfair Display',serif;
+      font-size:3.5rem;font-weight:400;
+      color:rgba(255,255,255,.88);
+      line-height:1;margin-bottom:.5rem;
+    }
+    .ai-brand span{color:var(--qs-dim)}
+    .ai-model{font-size:.72rem;letter-spacing:.4em;color:var(--muted);margin-bottom:1.5rem}
+    .ai-body{font-size:.88rem;line-height:2;color:var(--muted)}
+
+    .workflow{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--line);margin-bottom:2.5rem}
+    .wf-step{background:var(--bg);padding:1.5rem 1.2rem;text-align:center}
+    .wf-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;color:rgba(153,96,64,.4);line-height:1;margin-bottom:.5rem}
+    .wf-title{font-size:.78rem;letter-spacing:.15em;color:var(--text);margin-bottom:.3rem}
+    .wf-desc{font-size:.72rem;line-height:1.7;color:var(--muted)}
+
+    .convo-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--line)}
+    .stat-box{background:var(--bg);padding:1.5rem;text-align:center}
+    .stat-num{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:400;color:var(--white);line-height:1;margin-bottom:.3rem}
+    .stat-label{font-size:.68rem;letter-spacing:.25em;color:var(--muted)}
+
+    /* ══════════════════ FOOTER ══════════════════ */
+    footer{
+      border-top:1px solid var(--line);
+      padding:4rem;
+      display:grid;grid-template-columns:1fr 1fr 1fr;
+      gap:2rem;
+      background:var(--bg);
+    }
+    .footer-col-label{font-size:.62rem;letter-spacing:.45em;color:var(--muted);margin-bottom:1rem}
+    .footer-col-title{font-family:'Noto Serif TC',serif;font-size:1.1rem;font-weight:300;color:var(--white);margin-bottom:.5rem}
+    .footer-col-sub{font-size:.78rem;color:var(--muted);line-height:1.8}
+    .footer-links{display:flex;flex-direction:column;gap:.4rem}
+    .footer-links a{font-size:.8rem;color:var(--muted);text-decoration:none;letter-spacing:.06em;transition:color .2s}
+    .footer-links a:hover{color:var(--text)}
+    .footer-copy{font-size:.68rem;letter-spacing:.18em;color:var(--muted);margin-top:1.5rem}
+
+    /* ══════════════════ 08 PROCESS ══════════════════ */
+    .process-step{background:var(--bg);padding:1.6rem 1.4rem;width:260px;flex-shrink:0;border:1px solid var(--line)}
+    .process-step-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:400;color:rgba(153,96,64,.35);line-height:1;margin-bottom:.6rem}
+    .process-step-title{font-family:'Noto Serif TC',serif;font-size:.9rem;font-weight:400;letter-spacing:.08em;color:var(--white);margin-bottom:.4rem}
+    .process-step-desc{font-size:.76rem;line-height:1.85;color:var(--muted)}
+
+    .process-scroll-label{font-size:.64rem;letter-spacing:.4em;color:var(--muted);margin-bottom:1.2rem}
+    .process-scroll-wrap{
+      overflow-x:auto;
+      scrollbar-width:thin;
+      scrollbar-color:var(--line) transparent;
+      padding-bottom:.8rem;
+      cursor:grab;
+    }
+    .process-scroll-wrap:active{cursor:grabbing}
+    .process-scroll-wrap::-webkit-scrollbar{height:3px}
+    .process-scroll-wrap::-webkit-scrollbar-track{background:transparent}
+    .process-scroll-wrap::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+    .process-scroll-track{
+      display:flex;gap:12px;
+      width:max-content;
+    }
+    .process-img-slot{
+      position:relative;
+      width:320px;height:220px;
+      background:var(--bg3);
+      border:1px solid var(--line);
+      overflow:hidden;
+      flex-shrink:0;
+    }
+    .process-img-slot img{
+      width:100%;height:100%;
+      object-fit:cover;
+      display:block;
+      transition:transform .4s ease;
+    }
+    .process-img-slot:hover img{transform:scale(1.04)}
+    .process-img-placeholder{
+      position:absolute;inset:0;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:.5rem;
+    }
+    .process-img-placeholder-icon{font-size:1.8rem;opacity:.25}
+    .process-img-placeholder-text{font-size:.62rem;letter-spacing:.3em;color:var(--muted);opacity:.6}
+    .process-img-caption{
+      position:absolute;bottom:0;left:0;right:0;
+      padding:.5rem .8rem;
+      background:linear-gradient(transparent,rgba(10,9,8,.85));
+      font-size:.66rem;letter-spacing:.15em;color:rgba(216,211,200,.6);
+    }
+    .process-scroll-hint{
+      display:flex;align-items:center;gap:.5rem;
+      font-size:.63rem;letter-spacing:.25em;color:var(--muted);
+      margin-top:.8rem;opacity:.6;
+    }
+    .process-scroll-hint::before{content:'←';margin-right:.2rem}
+    .process-scroll-hint::after{content:'→';margin-left:.2rem}
+
+    /* ══════════════════ RWD ══════════════════ */
+    @media(max-width:900px){
+      .sec-inner{padding:0 2rem}
+      .overview-grid,.pillars,.ds-grid,.tools-grid,.workflow,.convo-stats,.ai-hero,.sitemap-nodes{grid-template-columns:1fr}
+      .demo-pane{flex-direction:column}
+      .demo-browser{width:100%;min-width:auto}
+      footer{grid-template-columns:1fr}
+      .hero-year{display:none}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════ HERO ══════ -->
+<section class="hero">
+  <div class="hero-year">2026</div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      CONCEPT · DESIGN · PROCESS
+    </div>
+    <h1 class="hero-title">山<span class="dot">·</span>田</h1>
+    <div class="hero-en">SHANTIAN</div>
+    <div class="hero-sub">旗山 × 斗南｜地方比較網站</div>
+    <div class="hero-desc">設計概念、技術架構與 AI 協作開發紀錄</div>
+  </div>
+  <div class="hero-scroll">
+    SCROLL
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- ══════ 01 專題背景 ══════ -->
+<section class="sec" id="overview">
+  <div class="sec-inner" style="position:relative">
+    <div class="sec-num">01</div>
+    <div class="sec-head rv">
+      <div class="sec-eyebrow">01 · PROJECT OVERVIEW</div>
+      <h2 class="sec-title">命名靈感</h2>
+    </div>
+    <div class="rv">
+      <div class="overview-col" style="background:var(--bg);padding:2.5rem;max-width:680px">
+        <div class="overview-col-label">NAMING INSPIRATION</div>
+        <div class="overview-col-title">山·田 SHANTIAN</div>
+        <div class="overview-col-body">
+          「山·田 SHANTIAN」靈感源自旗山依山而生的地貌，以及斗南隨處可見的田野景致。透過「山」與「田」二字，串連兩個地區的風土特色，轉化為簡約而深具識別性的品牌語言。
+        </div>
+        <div style="margin-top:1.2rem">
+          <span class="region-pill pill-qs">高雄市 · 旗山區</span>
+          <span class="region-pill pill-dn">雲林縣 · 斗南鎮</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 02 設計理念 ══════ -->
+<section class="sec bg2" id="concept">
+  <div class="sec-inner" style="position:relative">
+    <div class="sec-num">02</div>
+    <div class="sec-head rv">
+      <div class="sec-eyebrow">02 · DESIGN PHILOSOPHY</div>
+      <h2 class="sec-title">設計理念</h2>
+    </div>
+    <div class="pillars">
+      <div class="pillar rv">
+        <div class="pillar-num">I</div>
+        <div class="pillar-title">簡潔</div>
+        <div class="pillar-body">以攝影作品集為靈感，使用大量留白、嚴謹的排版、單色設計。避免裝飾性元素，讓內容本身成為視覺焦點。</div>
+      </div>
+      <div class="pillar rv2">
+        <div class="pillar-num">II</div>
+        <div class="pillar-title">低飽和</div>
+        <div class="pillar-body">全站使用深色背景，搭配低飽和度的暖橘（旗山）與橄欖綠（斗南）作為地區識別色。刻意降低色彩飽和度，避免過度花俏的色彩干擾閱讀。</div>
+      </div>
+      <div class="pillar rv3">
+        <div class="pillar-num">III</div>
+        <div class="pillar-title">互動</div>
+        <div class="pillar-body">留言牆頁面，讓每個造訪網站的人都可留下自己對台灣甚至其他國家各地的獨特記憶。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 03 設計語言 ══════ -->
+<section class="sec" id="design-system">
+  <div class="sec-inner" style="position:relative">
+    <div class="sec-num">03</div>
+    <div class="sec-head rv">
+      <div class="sec-eyebrow">03 · DESIGN SYSTEM</div>
+      <h2 class="sec-title">設計語言</h2>
+    </div>
+    <div class="ds-grid rv">
+
+      <!-- Colors -->
+      <div>
+        <div class="ds-label">COLOR PALETTE</div>
+        <div class="color-swatches">
+          <div class="swatch"><div class="swatch-block" style="background:#131312;border:1px solid #2a2926"></div><div class="swatch-info"><div class="swatch-name">背景主色</div><div class="swatch-hex">#131312</div></div></div>
+          <div class="swatch"><div class="swatch-block" style="background:#191917"></div><div class="swatch-info"><div class="swatch-name">背景次色</div><div class="swatch-hex">#191917</div></div></div>
+          <div class="swatch"><div class="swatch-block" style="background:#d8d3c8"></div><div class="swatch-info"><div class="swatch-name">文字主色</div><div class="swatch-hex">#d8d3c8</div></div></div>
+          <div class="swatch"><div class="swatch-block" style="background:#6a6760"></div><div class="swatch-info"><div class="swatch-name">輔助文字</div><div class="swatch-hex">#6a6760</div></div></div>
+          <div class="swatch"><div class="swatch-block" style="background:#996040"></div><div class="swatch-info"><div class="swatch-name">旗山色</div><div class="swatch-hex">#996040</div></div></div>
+          <div class="swatch"><div class="swatch-block" style="background:#4d6b38"></div><div class="swatch-info"><div class="swatch-name">斗南色</div><div class="swatch-hex">#4d6b38</div></div></div>
+          <div class="swatch"><div class="swatch-block" style="background:#252320"></div><div class="swatch-info"><div class="swatch-name">分隔線</div><div class="swatch-hex">#252320</div></div></div>
+        </div>
+      </div>
+
+      <!-- Typography -->
+      <div>
+        <div class="ds-label">TYPOGRAPHY</div>
+        <div>
+          <div class="type-row">
+            <div class="type-specimen" style="font-family:'Noto Serif TC',serif;font-weight:300">旗山 × 斗南</div>
+            <div class="type-meta">NOTO SERIF TC · WEIGHT 300 · DISPLAY</div>
+          </div>
+          <div class="type-row">
+            <div class="type-specimen" style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.3rem">SHANTIAN 2025</div>
+            <div class="type-meta">PLAYFAIR DISPLAY · ITALIC · ACCENT</div>
+          </div>
+          <div class="type-row">
+            <div class="type-specimen" style="font-family:'Noto Sans TC',sans-serif;font-size:.95rem;letter-spacing:.1em">高雄市旗山區 · 雲林縣斗南鎮</div>
+            <div class="type-meta">NOTO SANS TC · WEIGHT 400 · BODY</div>
+          </div>
+          <div class="type-row">
+            <div class="type-specimen" style="font-family:'Playfair Display',serif;font-size:2rem;color:rgba(153,96,64,.8)">"</div>
+            <div class="type-meta">PLAYFAIR DISPLAY · DECORATIVE QUOTE</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Components -->
+      <div>
+        <div class="ds-label">UI COMPONENTS</div>
+        <div class="comp-row">
+          <div>
+            <div class="comp-item">
+              <div class="comp-dot" style="background:#996040"></div>
+              旗山 <span style="font-size:.65rem;color:#6a6760;margin-left:.3rem">REGION BADGE</span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:.62rem;letter-spacing:.5em;color:#6a6760;margin-bottom:.4rem">EYEBROW LABEL</div>
+            <div style="font-family:'Noto Serif TC',serif;font-size:1.1rem;font-weight:300;color:rgba(255,255,255,.88)">比較頁標題示例</div>
+          </div>
+          <div style="display:flex;gap:.3rem;flex-wrap:wrap">
+            <span style="font-size:.63rem;letter-spacing:.12em;padding:.12rem .5rem;border:1px solid #252320;color:#6a6760">旗山老街</span>
+            <span style="font-size:.63rem;letter-spacing:.12em;padding:.12rem .5rem;border:1px solid #252320;color:#6a6760">香蕉文化</span>
+            <span style="font-size:.63rem;letter-spacing:.12em;padding:.12rem .5rem;border:1px solid #252320;color:#6a6760">縱貫鐵路</span>
+          </div>
+          <div style="display:flex;gap:.8rem">
+            <div style="width:50px;height:3px;background:rgba(153,96,64,.8)"></div>
+            <div style="width:50px;height:3px;background:rgba(77,107,56,.8)"></div>
+          </div>
+          <div style="height:1px;background:#252320;width:100%;position:relative">
+            <div style="position:absolute;left:0;top:-4px;width:9px;height:9px;border-radius:50%;background:#0f0e0d;border:1.5px solid #996040"></div>
+          </div>
+          <div style="font-size:.7rem;color:#6a6760">─── 時間軸節點 / 分隔線元件</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 04 網站架構 ══════ -->
+<section class="sec bg2" id="structure">
+  <div class="sec-inner" style="position:relative">
+    <div class="sec-num">04</div>
+    <div class="sec-head rv">
+      <div class="sec-eyebrow">04 · SITE ARCHITECTURE</div>
+      <h2 class="sec-title">網站架構</h2>
+    </div>
+    <div class="sitemap rv">
+      <div class="sitemap-root">山·田 SHANTIAN</div>
+      <div class="sitemap-connector-v"></div>
+      <div class="sitemap-nodes">
+        <a class="sitemap-node" href="index.html" target="_blank">
+          <div class="sitemap-node-icon"><i class="bi bi-house"></i></div>
+          <div class="sitemap-node-name">首頁</div>
+          <div class="sitemap-node-en">INDEX</div>
+        </a>
+        <a class="sitemap-node" href="compare.html" target="_blank">
+          <div class="sitemap-node-icon"><i class="bi bi-arrow-left-right"></i></div>
+          <div class="sitemap-node-name">深入比較</div>
+          <div class="sitemap-node-en">COMPARE</div>
+        </a>
+        <a class="sitemap-node" href="food.html" target="_blank">
+          <div class="sitemap-node-icon"><i class="bi bi-map"></i></div>
+          <div class="sitemap-node-name">美食地圖</div>
+          <div class="sitemap-node-en">FOOD MAP</div>
+        </a>
+        <a class="sitemap-node" href="memories.html" target="_blank">
+          <div class="sitemap-node-icon"><i class="bi bi-chat-square-text"></i></div>
+          <div class="sitemap-node-name">留言牆</div>
+          <div class="sitemap-node-en">MEMORIES</div>
+          <div><span class="sitemap-node-new">GAS + Sheets</span></div>
+        </a>
+        <a class="sitemap-node" href="sources.html" target="_blank">
+          <div class="sitemap-node-icon"><i class="bi bi-journal-text"></i></div>
+          <div class="sitemap-node-name">資料來源</div>
+          <div class="sitemap-node-en">SOURCES</div>
+        </a>
+      </div>
+      <div style="margin-top:1.5rem;width:100%;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;background:var(--line)">
+        <div style="background:var(--bg3);padding:.8rem;font-size:.68rem;color:var(--muted);line-height:1.7">分割畫面<br>Hero 動畫<br>卡片比較</div>
+        <div style="background:var(--bg3);padding:.8rem;font-size:.68rem;color:var(--muted);line-height:1.7">9 個比較區塊<br>圖片放大<br>Chart.js 圖表<br>Leaflet 地圖</div>
+        <div style="background:var(--bg3);padding:.8rem;font-size:.68rem;color:var(--muted);line-height:1.7">Leaflet.js<br>標記高亮</div>
+        <div style="background:var(--bg3);padding:.8rem;font-size:.68rem;color:var(--muted);line-height:1.7">浮動卡片牆<br>GAS 後端<br>Google Sheets</div>
+        <div style="background:var(--bg3);padding:.8rem;font-size:.68rem;color:var(--muted);line-height:1.7">參考文獻<br>分類索引<br>說明標籤</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 05 工具與技術 ══════ -->
+<section class="sec bg2" id="tools">
+  <div class="sec-inner" style="position:relative">
+    <div class="sec-num">05</div>
+    <div class="sec-head rv">
+      <div class="sec-eyebrow">05 · TOOLS & TECHNOLOGY</div>
+      <h2 class="sec-title">工具與技術</h2>
+    </div>
+    <div class="tools-grid rv">
+
+      <div class="tool-card">
+        <div class="tool-icon"><i class="bi bi-robot"></i></div>
+        <div class="tool-name">Claude AI</div>
+        <div class="tool-role">Anthropic · 核心開發工具</div>
+        <div class="tool-desc">網頁主要透過 Claude Sonnet 4.6 協作完成，是本專題最重要的協作工具。</div>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-icon"><i class="bi bi-grid-3x3-gap"></i></div>
+        <div class="tool-name">Bootstrap 5</div>
+        <div class="tool-role">排版輔助框架</div>
+        <div class="tool-desc">使用Bootstrap 5的網格布局以及圖片輪播元件。</div>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-icon"><i class="bi bi-pin-map"></i></div>
+        <div class="tool-name">Leaflet.js</div>
+        <div class="tool-role">互動地圖引擎</div>
+        <div class="tool-desc">透過Leaflet.js使用OpenStreetMap圖資。搭配 CartoDB Light 底圖與自訂 SVG 標記，呈現簡潔的地圖資訊。</div>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-icon"><i class="bi bi-bar-chart-line"></i></div>
+        <div class="tool-name">Chart.js</div>
+        <div class="tool-role">數據視覺化</div>
+        <div class="tool-desc">使用Chart.js來呈現比較頁人口結構四組圖表。</div>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-icon"><i class="bi bi-gear"></i></div>
+        <div class="tool-name">Google Apps Script</div>
+        <div class="tool-role">留言牆後端</div>
+        <div class="tool-desc">處理留言牆頁面的 GET（讀取留言）與 POST（寫入新留言）請求。</div>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-icon"><i class="bi bi-table"></i></div>
+        <div class="tool-name">Google Sheets</div>
+        <div class="tool-role">資料庫</div>
+        <div class="tool-desc">將留言牆每筆留言包含名稱、地區、內容儲存到 Google 試算表，以試算表作為輕量資料庫。</div>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-icon"><i class="bi bi-images"></i></div>
+        <div class="tool-name">Fancybox.js</div>
+        <div class="tool-role">圖片放大</div>
+        <div class="tool-desc">透過Fancybox實現點擊圖片放大檢視的效果。</div>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-icon"><i class="bi bi-type"></i></div>
+        <div class="tool-name">Google Fonts</div>
+        <div class="tool-role">字型服務</div>
+        <div class="tool-desc">Noto Serif TC（標題）、Playfair Display（數字與裝飾）、Noto Sans TC（內文）。</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 06 AI 協作說明 ══════ -->
+<section class="sec" id="ai">
+  <div class="sec-inner" style="position:relative">
+    <div class="sec-num">06</div>
+    <div class="sec-head rv">
+      <div class="sec-eyebrow">06 · AI COLLABORATION</div>
+      <h2 class="sec-title">AI 協作開發</h2>
+    </div>
+
+    <div class="ai-hero rv">
+      <div>
+        <div class="ai-brand">Claude</div>
+        <div class="ai-model">ANTHROPIC · CLAUDE SONNET 4.6</div>
+        <div class="ai-body">網頁程式碼、設計系統、元件架構及功能實作主要由 Claude AI 完成。並使用Claude Code 進行細節的修改。</div>
+      </div>
+      <div>
+        <div class="ai-body" style="margin-bottom:1rem">
+          <strong style="color:rgba(255,255,255,.7);letter-spacing:.05em">Claude 在本專題中的具體貢獻：</strong>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.55rem">
+          <div style="font-size:.82rem;color:var(--muted);display:flex;gap:.6rem"><span style="color:var(--qs-dim);flex-shrink:0">→</span>生成五個完整頁面的 HTML/CSS/JS</div>
+          <div style="font-size:.82rem;color:var(--muted);display:flex;gap:.6rem"><span style="color:var(--qs-dim);flex-shrink:0">→</span>建立並維護跨頁面一致的設計語言</div>
+          <div style="font-size:.82rem;color:var(--muted);display:flex;gap:.6rem"><span style="color:var(--qs-dim);flex-shrink:0">→</span>整合 Leaflet、Chart.js、FancyBox 等第三方工具</div>
+          <div style="font-size:.82rem;color:var(--muted);display:flex;gap:.6rem"><span style="color:var(--qs-dim);flex-shrink:0">→</span>除錯</div>
+        </div>
+      </div>
+    </div>
+    <div class="ai-hero rv">
+      <div>
+        <div class="ai-brand">ChatGPT</div>
+        <div class="ai-model">OPENAI · GPT 5.5</div>
+        <div class="ai-body">Google App Script主要由chatgpt所生成。</div>
+      </div>
+      <div>
+        <div class="ai-body" style="margin-bottom:1rem">
+          <strong style="color:rgba(255,255,255,.7);letter-spacing:.05em">ChatGPT 在本專題中的具體貢獻：</strong>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.55rem">
+          <div style="font-size:.82rem;color:var(--muted);display:flex;gap:.6rem"><span style="color:var(--gold);flex-shrink:0">→</span>生成GAS程式碼</div>
+          <div style="font-size:.82rem;color:var(--muted);display:flex;gap:.6rem"><span style="color:var(--gold);flex-shrink:0">→</span>除錯GAS程式碼</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ 07 製作過程 ══════ -->
+<section class="sec bg2" id="process">
+  <div class="sec-inner" style="position:relative">
+    <div class="sec-num">07</div>
+    <div class="sec-head rv">
+      <div class="sec-eyebrow">07 · PRODUCTION PROCESS</div>
+      <h2 class="sec-title">網頁製作過程</h2>
+    </div>
+
+    <!-- 製作階段橫向卷軸 -->
+    <div class="rv" style="margin-bottom:2.5rem">
+      <div class="process-scroll-label">STAGES · 製作階段</div>
+      <div class="process-scroll-wrap" id="processSteps">
+        <div class="process-scroll-track">
+          <div class="process-step">
+            <div class="process-step-num">01</div>
+            <div class="process-step-title">初期規劃</div>
+            <div class="process-step-desc">在討論初期，我們首先大致規劃了網頁名稱與核心內容，並在首次更新時敲定首頁的基礎色調、格式與動畫效果。</div>
+          </div>
+          <div class="process-step">
+            <div class="process-step-num">02</div>
+            <div class="process-step-title">頁面擴充</div>
+            <div class="process-step-desc">確認完風格後，我們新增了「比較頁面」與「資料來源頁面」，並針對比較頁面進行調整，擬定具體的對比項目與圖片排版方式，要求其與整體的網站設計語言保持一致。</div>
+          </div>
+          <div class="process-step">
+            <div class="process-step-num">03</div>
+            <div class="process-step-title">增修細節</div>
+            <div class="process-step-desc">接下來，我們著手打磨比較頁面的細節，重點在於優化導覽體驗與版面呈現。包括修正導覽跳轉問題、調整導覽列樣式、重新整理各區塊的比較布局，並將部分內容改為更直觀的圖文或數據呈現。</div>
+          </div>
+          <div class="process-step">
+            <div class="process-step-num">04</div>
+            <div class="process-step-title">新增美食地圖</div>
+            <div class="process-step-desc">我們將美食比較的部分，獨立出另一個頁面製作成「美食地圖」，並在每個店家都添加了圖片、文字敘述以及地圖資訊。</div>
+          </div>
+          <div class="process-step">
+            <div class="process-step-num">05</div>
+            <div class="process-step-title">互動功能</div>
+            <div class="process-step-desc">為了增加互動感，我們決定新增「留言牆」頁面，讓留言以卡片浮動的效果呈現，模擬便利貼張貼的感覺。資料儲存則使用 Google Apps Script 將留言蒐集並存至 Google Sheets。</div>
+          </div>
+          <div class="process-step">
+            <div class="process-step-num">06</div>
+            <div class="process-step-title">測試與修訂</div>
+            <div class="process-step-desc">在測試後，我們發現並修正了幾個問題，包括調整時間顯示錯誤、限制地區欄位只能輸入文字，並在 GAS 端加入了過濾系統。</div>
+          </div>
+          <div class="process-step">
+            <div class="process-step-num">07</div>
+            <div class="process-step-title">最終迭代</div>
+            <div class="process-step-desc">在歷經數次迭代、確定網頁整體設計後，我們最終針對網頁內各項目所需的圖片及文本內容進行了細部修正。</div>
+          </div>
+        </div>
+      </div>
+      <div class="process-scroll-hint">SCROLL TO EXPLORE</div>
+    </div>
+
+    <!-- 橫向圖片卷軸 -->
+    <div class="rv2">
+      <div class="process-scroll-label">PROCESS GALLERY · 製作記錄</div>
+      <div class="process-scroll-wrap" id="processScroll">
+        <div class="process-scroll-track">
+
+          <!-- 圖片 1：可替換 src -->
+          <div class="process-img-slot">
+            <img src="./img/cc_01.jpg" alt="製作過程 01">
+            <div class="process-img-caption">討論</div>
+          </div>
+
+          <!-- 圖片 2 -->
+          <div class="process-img-slot">
+            <img src="./img/cc_02.jpg" alt="製作過程 02">
+            <div class="process-img-caption">討論</div>
+          </div>
+
+          <!-- 圖片 3 -->
+          <div class="process-img-slot">
+            <img src="./img/cc_03.png" alt="製作過程 03">
+            <div class="process-img-caption">網頁最初草稿</div>
+          </div>
+
+          <!-- 圖片 4 -->
+          <div class="process-img-slot">
+            <img src="./img/cc_04.png" alt="製作過程 03">
+            <div class="process-img-caption">留言儲存測試</div>
+          </div>
+
+          
+        </div>
+      </div>
+      <div class="process-scroll-hint">SCROLL TO EXPLORE</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════ 08 DEMO ══════ -->
+<section class="sec" id="demo">
+  <div class="sec-inner" style="position:relative">
+    <div class="sec-num">08</div>
+    <div class="sec-head rv">
+      <div class="sec-eyebrow">08 · LIVE DEMO</div>
+      <h2 class="sec-title">網頁展示</h2>
+    </div>
+
+    <!-- Tabs -->
+    <div class="demo-tabs rv">
+      <button class="demo-tab active" data-tab="demo-index">首頁</button>
+      <button class="demo-tab" data-tab="demo-compare">深入比較</button>
+      <button class="demo-tab" data-tab="demo-food">美食地圖</button>
+      <button class="demo-tab" data-tab="demo-memories">留言牆</button>
+      <button class="demo-tab" data-tab="demo-sources">資料來源</button>
+    </div>
+
+    <!-- Pane: 首頁 -->
+    <div class="demo-pane active" id="demo-index">
+      <div class="demo-browser">
+        <div class="browser-chrome">
+          <div class="chrome-dot"></div><div class="chrome-dot"></div><div class="chrome-dot"></div>
+          <div class="chrome-url">shantian / index.html</div>
+        </div>
+        <div class="browser-viewport">
+          <iframe src="index.html" loading="lazy" title="首頁 Demo"></iframe>
+        </div>
+      </div>
+      <div class="demo-info">
+        <div class="demo-info-tag">PAGE 01 · INDEX</div>
+        <div class="demo-info-title">首頁</div>
+        <div class="demo-info-desc">以對角線分割的全螢幕 Hero 呈現旗山與斗南的地景對比。點擊「查看更多」後，兩側畫面以門扉打開的動畫展開，進入比較卡片內容。捲回頂部時畫面自動合攏。</div>
+        <div class="demo-features">
+          <div class="demo-feature">CSS clip-path 對角分割 Hero</div>
+          <div class="demo-feature">畫面打開 / 合攏動畫</div>
+          <div class="demo-feature">IntersectionObserver 捲動觸發</div>
+        </div>
+        <a class="demo-open" href="index.html" target="_blank">在新分頁開啟 →</a>
+      </div>
+    </div>
+
+    <!-- Pane: 深入比較 -->
+    <div class="demo-pane" id="demo-compare">
+      <div class="demo-browser">
+        <div class="browser-chrome">
+          <div class="chrome-dot"></div><div class="chrome-dot"></div><div class="chrome-dot"></div>
+          <div class="chrome-url">shantian / compare.html</div>
+        </div>
+        <div class="browser-viewport">
+          <iframe src="compare.html" loading="lazy" title="比較頁 Demo"></iframe>
+        </div>
+      </div>
+      <div class="demo-info">
+        <div class="demo-info-tag">PAGE 02 · COMPARE</div>
+        <div class="demo-info-title">深入比較</div>
+        <div class="demo-info-desc">九個比較區塊依次展開：基本資料、歷史時間軸、人口圖表、交通地圖、教育統計、生活機能、核心場域、自然環境、作者視角。</div>
+        <div class="demo-features">
+          <div class="demo-feature">懸浮毛玻璃子導覽列</div>
+          <div class="demo-feature">Chart.js 四組人口圖表</div>
+          <div class="demo-feature">Leaflet 交通地圖 + 輪播</div>
+          <div class="demo-feature">Fancybox圖片放大</div>
+        </div>
+        <a class="demo-open" href="compare.html" target="_blank">在新分頁開啟 →</a>
+      </div>
+    </div>
+
+    <!-- Pane: 美食地圖 -->
+    <div class="demo-pane" id="demo-food">
+      <div class="demo-browser">
+        <div class="browser-chrome">
+          <div class="chrome-dot"></div><div class="chrome-dot"></div><div class="chrome-dot"></div>
+          <div class="chrome-url">shantian / food.html</div>
+        </div>
+        <div class="browser-viewport">
+          <iframe src="food.html" loading="lazy" title="美食地圖 Demo"></iframe>
+        </div>
+      </div>
+      <div class="demo-info">
+        <div class="demo-info-tag">PAGE 03 · FOOD MAP</div>
+        <div class="demo-info-title">美食地圖</div>
+        <div class="demo-info-desc">整合 Leaflet.js 互動地圖，標記旗山與斗南共 11 個美食地點。點擊標記彈出含圖片輪播的店家資訊。</div>
+        <div class="demo-features">
+          <div class="demo-feature">CartoDB Positron 地圖底圖</div>
+          <div class="demo-feature">自訂 SVG 標記（主動/非主動狀態）</div>
+          <div class="demo-feature">地點卡片縮圖列表</div>
+        </div>
+        <a class="demo-open" href="food.html" target="_blank">在新分頁開啟 →</a>
+      </div>
+    </div>
+
+    <!-- Pane: 留言牆 -->
+    <div class="demo-pane" id="demo-memories">
+      <div class="demo-browser">
+        <div class="browser-chrome">
+          <div class="chrome-dot"></div><div class="chrome-dot"></div><div class="chrome-dot"></div>
+          <div class="chrome-url">shantian / memories.html</div>
+        </div>
+        <div class="browser-viewport">
+          <iframe src="memories.html" loading="lazy" title="留言牆 Demo"></iframe>
+        </div>
+      </div>
+      <div class="demo-info">
+        <div class="demo-info-tag">PAGE 04 · MEMORY WALL</div>
+        <div class="demo-info-title">留言牆</div>
+        <div class="demo-info-desc">每位訪客皆可留下與家鄉相關的記憶。卡片以隨機大小、旋轉角度與垂直偏移浮動呈現。點擊卡片放大閱讀。透過 Google Apps Script 寫入 Google Sheets。</div>
+        <div class="demo-features">
+          <div class="demo-feature">Google Apps Script 後端 + Google Sheets 儲存</div>
+          <div class="demo-feature">浮動卡片動畫</div>
+        </div>
+        <a class="demo-open" href="memories.html" target="_blank">在新分頁開啟 →</a>
+      </div>
+    </div>
+
+    <!-- Pane: 資料來源 -->
+    <div class="demo-pane" id="demo-sources">
+      <div class="demo-browser">
+        <div class="browser-chrome">
+          <div class="chrome-dot"></div><div class="chrome-dot"></div><div class="chrome-dot"></div>
+          <div class="chrome-url">shantian / sources.html</div>
+        </div>
+        <div class="browser-viewport">
+          <iframe src="sources.html" loading="lazy" title="資料來源 Demo"></iframe>
+        </div>
+      </div>
+      <div class="demo-info">
+        <div class="demo-info-tag">PAGE 05 · SOURCES</div>
+        <div class="demo-info-title">資料來源</div>
+        <div class="demo-info-desc">完整列出本網站所使用的數據、統計與文獻來源，依旗山相關、斗南相關與共同引用三類分組，並標注來源類型（政府 / 統計 / 研究）。</div>
+        <div class="demo-features">
+          <div class="demo-feature">參考文獻索引</div>
+          <div class="demo-feature">來源類型標籤</div>
+        </div>
+        <a class="demo-open" href="sources.html" target="_blank">在新分頁開啟 →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════ FOOTER ══════ -->
+<footer>
+  <div>
+    <div class="footer-col-label">PROJECT</div>
+    <div class="footer-col-title">山·田 SHANTIAN</div>
+    <div class="footer-col-sub">旗山 × 斗南<br>期末專題製作</div>
+    <div class="footer-copy">© 2026 · SHANTIAN</div>
+  </div>
+  <div>
+    <div class="footer-col-label">PAGES</div>
+    <div class="footer-links">
+      <a href="index.html"    target="_blank">首頁 ↗</a>
+      <a href="compare.html"  target="_blank">深入比較 ↗</a>
+      <a href="food.html"     target="_blank">美食地圖 ↗</a>
+      <a href="memories.html" target="_blank">留言牆 ↗</a>
+      <a href="sources.html"  target="_blank">資料來源 ↗</a>
+    </div>
+  </div>
+  <div>
+    <div class="footer-col-label">BUILT WITH</div>
+    <div class="footer-links">
+      <a href="https://claude.ai" target="_blank">Claude AI (Anthropic) ↗</a>
+      <a href="https://getbootstrap.com" target="_blank">Bootstrap 5 ↗</a>
+      <a href="https://leafletjs.com" target="_blank">Leaflet.js ↗</a>
+      <a href="https://www.chartjs.org" target="_blank">Chart.js ↗</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── REVEAL ON SCROLL ── */
+const rvObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('on'); rvObs.unobserve(e.target); }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.rv,.rv2,.rv3').forEach(el => rvObs.observe(el));
+
+/* ── PROCESS DRAG SCROLL ── */
+['processScroll','processSteps'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(!el) return;
+  let isDown=false,startX,scrollLeft;
+  el.addEventListener('mousedown',e=>{isDown=true;startX=e.pageX-el.offsetLeft;scrollLeft=el.scrollLeft});
+  el.addEventListener('mouseleave',()=>isDown=false);
+  el.addEventListener('mouseup',()=>isDown=false);
+  el.addEventListener('mousemove',e=>{
+    if(!isDown) return;
+    e.preventDefault();
+    el.scrollLeft=scrollLeft-(e.pageX-el.offsetLeft-startX)*1.2;
+  });
+});
+
+/* ── DEMO TABS ── */
+document.querySelectorAll('.demo-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.demo-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.demo-pane').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.tab).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
