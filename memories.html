@@ -389,8 +389,19 @@
 <script>
 
 /* ── CONFIG ── */
-const CF_URL   = 'https://misty-morning-a88d.bud2021-12-27.workers.dev';  // ← 填入 CF Worker 網址
-const API_KEY  = 'If_you_idiots_have_time_to_attack_the_website_why_dont_you_go_save_your_pathetic_final_exams_first';                                // ← 填入與 CF Worker 相同的金鑰
+const CF_URL = 'https://misty-morning-a88d.bud2021-12-27.workers.dev';
+const SEED   = '7c2a9e8f4b1d6c3a0e9b8f7a6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d7c'; 
+
+async function getToken() {
+  const enc = new TextEncoder();
+  const win = Math.floor(Date.now() / 300000);
+  const key = await crypto.subtle.importKey(
+    'raw', enc.encode(SEED),
+    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+  );
+  const sig = await crypto.subtle.sign('HMAC', key, enc.encode(String(win)));
+  return btoa(String.fromCharCode(...new Uint8Array(sig)));
+}
 
 /* ── IP (collected silently, included in payload) ── */
 let clientIP = '';
@@ -533,7 +544,7 @@ document.getElementById('btnSubmit').addEventListener('click', async () => {
       await fetch(CF_URL, {
         method:'POST',
         mode:'cors',
-        headers:{'Content-Type':'text/plain', 'X-API-Key': API_KEY},
+        headers:{'Content-Type':'text/plain', 'X-Time-Token': await getToken()},
         body: JSON.stringify(payload)
       });
     }
@@ -572,7 +583,7 @@ async function loadMessages() {
       {
         method:'GET',
         mode:'cors',
-        headers:{'X-API-Key': API_KEY}
+        headers:{'X-Time-Token': await getToken()}
       }
     );
     const data = await resp.json();
