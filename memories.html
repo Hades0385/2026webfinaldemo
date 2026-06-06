@@ -389,7 +389,8 @@
 <script>
 
 /* ── CONFIG ── */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxaOWqH1tLQnq96XbBSzeIALnqtrbE5ML7I8zZdDzQkedajybwd795inXv3SKsBy-Otyg/exec'; 
+const CF_URL   = 'https://misty-morning-a88d.bud2021-12-27.workers.dev';  // ← 填入 CF Worker 網址
+const API_KEY  = 'If_you_idiots_have_time_to_attack_the_website_why_dont_you_go_save_your_pathetic_final_exams_first';                                // ← 填入與 CF Worker 相同的金鑰
 
 /* ── IP (collected silently, included in payload) ── */
 let clientIP = '';
@@ -526,13 +527,13 @@ document.getElementById('btnSubmit').addEventListener('click', async () => {
   document.getElementById('wallCards').prepend(newCard);
   allMessages.unshift(payload);
 
-  /* send to GAS (no-cors = fire and forget, no response body) */
+  /* send via CF Worker */
   try {
-    if (GAS_URL && GAS_URL !== 'YOUR_GAS_DEPLOYMENT_URL') {
-      await fetch(GAS_URL, {
+    if (CF_URL && CF_URL !== 'https://YOUR_WORKER.YOUR_SUBDOMAIN.workers.dev') {
+      await fetch(CF_URL, {
         method:'POST',
-        mode:'no-cors',
-        headers:{'Content-Type':'text/plain'},
+        mode:'cors',
+        headers:{'Content-Type':'text/plain', 'X-API-Key': API_KEY},
         body: JSON.stringify(payload)
       });
     }
@@ -554,23 +555,24 @@ function showStatus(msg, type) {
   el.className = `form-status ${type}`;
 }
 
-/* ── FETCH FROM GAS ── */
+/* ── FETCH FROM CF WORKER ── */
 async function loadMessages() {
   /* always show demo messages immediately */
   allMessages = [...DEMO];
   renderCards(allMessages);
 
-  if (!GAS_URL || GAS_URL === 'YOUR_GAS_DEPLOYMENT_URL') {
+  if (!CF_URL || CF_URL === 'https://YOUR_WORKER.YOUR_SUBDOMAIN.workers.dev') {
     hideLoading();
     return;
   }
 
   try {
     const resp = await fetch(
-      `${GAS_URL}?action=get`,
+      `${CF_URL}?action=get`,
       {
         method:'GET',
-        mode:'cors'
+        mode:'cors',
+        headers:{'X-API-Key': API_KEY}
       }
     );
     const data = await resp.json();
